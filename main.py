@@ -31,6 +31,7 @@ class Options:
     client_id = os.getenv("CLIENT_ID")
     client_secret = os.getenv("CLIENT_SECRET")
     tenant_id = os.getenv("TENANT_ID")
+    env_name = os.getenv("ENV_NAME")
     scopes = [os.getenv("SCOPE")]
     company_id = os.getenv("COMPANY_ID")
     log_level = os.getenv("LOG_LEVEL") or constants.defult_log_level
@@ -39,6 +40,7 @@ class Options:
 
 
 options = Options()
+api_prefix = f"https://api.businesscentral.dynamics.com/v2.0/{options.tenant_id}/{options.env_name}/api/v2.0"
 
 # ----------------------------------------------------------------------------
 # Logging setup
@@ -96,7 +98,7 @@ def fetch_access_token() -> str | Exception:
     response = requests.post(url, data=payload)
 
     if response.status_code != HTTPStatus.OK:
-        return Exception(f"code: {response.status_code}, data: {response.json()}")
+        return exception_from_response(response)
 
     access_token = response.json().get("access_token")
     return access_token
@@ -117,19 +119,125 @@ logger.info(f"fetching access token done, access_token: {access_token}")
 # %%
 
 # ----------------------------------------------------------------------------
-# trying to fetch dummy data
+# Fetching companies
 # ----------------------------------------------------------------------------
 
-url = f"https://api.businesscentral.dynamics.com/v2.0/{options.tenant_id}/sandbox/ODataV4/Company('{options.company_id}')/dynamics_account"
-headers = {
-    "Authorization": f"Bearer {access_token}",
-    "Content-Type": "application/json",
-}
 
-response = requests.get(url, headers=headers)
+def exception_from_response(response: requests.Response) -> Exception:
+    return Exception(f"code: {response.status_code}, data: {response.json()}")
 
-if response.status_code == 200:
-    data = response.json()
-    print(data)
-else:
-    print("Failed to fetch data:", response.status_code, response.text)
+
+def fetch_companies():
+    url = f"{api_prefix}/companies"
+    headers = {"Authorization": f"Bearer {access_token}"}
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != HTTPStatus.OK:
+        return exception_from_response(response)
+
+    return response.json()["value"]
+
+
+logger.info("fetching companies...")
+
+companies_result = fetch_companies()
+if companies_result is Exception:
+    logger.info(f"fetching companies failed, error: {companies_result}")
+    exit()
+
+companies = companies_result
+
+logger.info(f"fetching companies done, count: {len(companies)}")
+
+# %%
+
+# ----------------------------------------------------------------------------
+# Fetching regions
+# ----------------------------------------------------------------------------
+
+
+def fetch_regions(companies):
+
+    regions_final = []
+    for company in companies:
+        company_id = company["id"]
+        logger.info(f"fetching regions for comapny {company_id}...")
+        url = f"{api_prefix}/companies({company_id})/countriesRegions"
+        headers = {"Authorization": f"Bearer {access_token}"}
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != HTTPStatus.OK:
+            return exception_from_response(response)
+
+        regions = response.json()["value"]
+
+        # adding the company id to regions
+        for region in regions:
+            region.pop("@odata.etag")
+            region["company"] = company_id
+
+        regions_final.extend(regions)
+
+    return regions_final
+
+
+logger.info("fetching regions...")
+
+regions_result = fetch_regions(companies=companies)
+if regions_result is Exception:
+    logger.info(f"fetching regions failed, error: {regions_result}")
+    exit()
+
+regions = regions_result
+
+logger.info(f"fetching regions done, count: {len(regions)}")
+
+# %%
+
+# ----------------------------------------------------------------------------
+# Fetching sales invoices
+# ----------------------------------------------------------------------------
+
+reponse_to_exception = exception_from_response
+
+
+def fetch_sales_invoices(companies: list) -> list | Exception:
+
+    sales_invoices_final = []
+    for company in companies:
+        company_id = company["id"]
+
+        url = f"{api_prefix}/companies({company_id})/salesInvoices"
+        headers = {"Authorization": f"Bearer {access_token}"}
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != HTTPStatus.OK:
+            return reponse_to_exception(response)
+
+        sales_invoices = response.json()["value"]
+        sales_invoices_count = len(sales_invoices)
+        for invoice in sales_invoices:
+            invoice.pop("@odata.etag")
+            invoice["company_id"] = company_id
+
+        logger.info(
+            f"fetching sales_invoices for company {company_id}, count: {sales_invoices_count}"
+        )
+        sales_invoices_final.extend(sales_invoices)
+
+    return sales_invoices_final
+
+
+logger.info("fetching sales_invoices...")
+
+sales_invoices_result = fetch_sales_invoices(companies=companies)
+if sales_invoices_result is Exception:
+    logger.info(f"fetching sales_invoices failed, error: {sales_invoices_result}")
+    exit()
+
+sales_invoices = sales_invoices_result
+
+logger.info(f"fetching sales_invoices done, count: {len(sales_invoices)}")
