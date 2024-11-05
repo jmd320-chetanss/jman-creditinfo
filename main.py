@@ -43,6 +43,15 @@ options = Options()
 api_prefix = f"https://api.businesscentral.dynamics.com/v2.0/{options.tenant_id}/{options.env_name}/api/v2.0"
 
 # ----------------------------------------------------------------------------
+# Utils
+# ----------------------------------------------------------------------------
+
+
+def exception_from_response(response: requests.Response) -> Exception:
+    return Exception(f"code: {response.status_code}, data: {response.json()}")
+
+
+# ----------------------------------------------------------------------------
 # Logging setup
 # ----------------------------------------------------------------------------
 
@@ -115,6 +124,8 @@ access_token = access_token_result
 
 logger.info(f"fetching access token done, access_token: {access_token}")
 
+assert access_token, "failed to get access_token"
+
 # %%
 
 # ----------------------------------------------------------------------------
@@ -122,232 +133,43 @@ logger.info(f"fetching access token done, access_token: {access_token}")
 # ----------------------------------------------------------------------------
 
 
-def exception_from_response(response: requests.Response) -> Exception:
-    return Exception(f"code: {response.status_code}, data: {response.json()}")
-
-
 def fetch_companies():
+    logger.info("fetching companies...")
+
     url = f"{api_prefix}/companies"
     headers = {"Authorization": f"Bearer {access_token}"}
 
     response = requests.get(url, headers=headers)
 
     if response.status_code != HTTPStatus.OK:
-        return exception_from_response(response)
+        ex = exception_from_response(response)
+        logger.error(f"fetching companies failed, error: {ex}")
+        return None
 
-    return response.json()["value"]
+    companies = response.json()["value"]
+    companies_count = len(companies)
 
-
-logger.info("fetching companies...")
-
-companies_result = fetch_companies()
-if companies_result is Exception:
-    logger.error(f"fetching companies failed, error: {companies_result}")
-    exit()
-
-companies = companies_result
-
-logger.info(f"fetching companies done, count: {len(companies)}")
-
-# %%
-
-# ----------------------------------------------------------------------------
-# Fetching regions
-# ----------------------------------------------------------------------------
+    logger.info(f"fetching companies done, count: {companies_count}")
+    return companies
 
 
-def fetch_regions(companies):
-
-    regions_final = []
-    for company in companies:
-        company_id = company["id"]
-        logger.info(f"fetching regions for comapny {company_id}...")
-        url = f"{api_prefix}/companies({company_id})/countriesRegions"
-        headers = {"Authorization": f"Bearer {access_token}"}
-
-        response = requests.get(url, headers=headers)
-
-        if response.status_code != HTTPStatus.OK:
-            return exception_from_response(response)
-
-        regions = response.json()["value"]
-
-        # adding the company id to regions
-        for region in regions:
-            region.pop("@odata.etag")
-            region["company"] = company_id
-
-        regions_final.extend(regions)
-
-    return regions_final
-
-
-logger.info("fetching regions...")
-
-regions_result = fetch_regions(companies=companies)
-if regions_result is Exception:
-    logger.error(f"fetching regions failed, error: {regions_result}")
-    exit()
-
-regions = regions_result
-
-logger.info(f"fetching regions done, count: {len(regions)}")
-
-# %%
-
-# ----------------------------------------------------------------------------
-# Fetching sales invoices
-# ----------------------------------------------------------------------------
-
-
-def fetch_sales_invoices(companies: list) -> list | Exception:
-
-    sales_invoices_final = []
-    for company in companies:
-        company_id = company["id"]
-
-        url = f"{api_prefix}/companies({company_id})/salesInvoices"
-        headers = {"Authorization": f"Bearer {access_token}"}
-
-        response = requests.get(url, headers=headers)
-
-        if response.status_code != HTTPStatus.OK:
-            return exception_from_response(response)
-
-        sales_invoices = response.json()["value"]
-        sales_invoices_count = len(sales_invoices)
-        for invoice in sales_invoices:
-            invoice.pop("@odata.etag")
-            invoice["company"] = company_id
-
-        logger.info(
-            f"fetching sales_invoices for company {company_id}, count: {sales_invoices_count}"
-        )
-        sales_invoices_final.extend(sales_invoices)
-
-    return sales_invoices_final
-
-
-logger.info("fetching sales_invoices...")
-
-sales_invoices_result = fetch_sales_invoices(companies=companies)
-if sales_invoices_result is Exception:
-    logger.error(f"fetching sales_invoices failed, error: {sales_invoices_result}")
-    exit()
-
-sales_invoices = sales_invoices_result
-
-logger.info(f"fetching sales_invoices done, count: {len(sales_invoices)}")
+companies = fetch_companies()
+assert companies, "failed to fetch companies"
 
 
 # %%
 
 # ----------------------------------------------------------------------------
-# Fetching items
+# Fetching company based resources
 # ----------------------------------------------------------------------------
 
 
-def fetch_items(companies: list) -> list | Exception:
+def fetch_company_resources(
+    resource_name: str, companies: list, resource_id: str = None
+) -> list | None:
 
-    items_final = []
-
-    for company in companies:
-        company_id = company["id"]
-        logger.info(f"fetching items for company {company_id}...")
-
-        url = f"{api_prefix}/companies({company_id})/items"
-        headers = {"Authorization": f"Bearer {access_token}"}
-
-        response = requests.get(url, headers=headers)
-
-        if response.status_code != HTTPStatus.OK:
-            return exception_from_response(response)
-
-        items: list = response.json()["value"]
-        items_count = len(items)
-
-        for item in items:
-            item.pop("@odata.etag")
-            item["company"] = company_id
-
-        items_final.extend(items)
-
-        logger.info(f"fetching items for company done, count: {items_count}.")
-
-    return items_final
-
-
-logger.info("fetching items...")
-
-items_result = fetch_items(companies)
-if items_result is Exception:
-    logger.error(f"fetching items failed, error: {items_result}")
-    exit()
-
-items = items_result
-items_count = len(items)
-
-logger.info(f"fetching items done, count: {items_count}.")
-
-# %%
-
-# ----------------------------------------------------------------------------
-# Fetching customers
-# ----------------------------------------------------------------------------
-
-
-def fetch_customers(companies: list) -> list | Exception:
-
-    customers_final = []
-
-    for company in companies:
-        company_id = company["id"]
-        logger.info(f"fetching customers for company {company_id}...")
-
-        url = f"{api_prefix}/companies({company_id})/customers"
-        headers = {"Authorization": f"Bearer {access_token}"}
-
-        response = requests.get(url, headers=headers)
-
-        if response.status_code != HTTPStatus.OK:
-            return exception_from_response(response)
-
-        customers: list = response.json()["value"]
-        customers_count = len(customers)
-
-        for customer in customers:
-            customer.pop("@odata.etag")
-            customer["company"] = company_id
-
-        customers_final.extend(customers)
-
-        logger.info(
-            f"fetching customers for company {company_id} done, count: {customers_count}."
-        )
-
-    return customers_final
-
-
-logger.info("fetching customers...")
-
-customers_result = fetch_customers(companies)
-if customers_result is Exception:
-    logger.error(f"fetching customers failed, error: {customers_result}")
-    exit()
-
-customers = customers_result
-customers_count = len(customers)
-
-logger.info(f"fetching customers done, count: {items_count}.")
-
-# %%
-
-# ----------------------------------------------------------------------------
-# Fetching contacts
-# ----------------------------------------------------------------------------
-
-
-def fetch_company_resources(resource_name: str, companies: list) -> None:
+    if resource_id is None:
+        resource_id = resource_name
 
     logger.info(f"fetching {resource_name}...")
     resources_final = []
@@ -356,7 +178,7 @@ def fetch_company_resources(resource_name: str, companies: list) -> None:
         company_id = company["id"]
         logger.info(f"fetching {resource_name} for company {company_id}...")
 
-        url = f"{api_prefix}/companies({company_id})/{resource_name}"
+        url = f"{api_prefix}/companies({company_id})/{resource_id}"
         headers = {"Authorization": f"Bearer {access_token}"}
 
         response = requests.get(url, headers=headers)
@@ -385,6 +207,14 @@ def fetch_company_resources(resource_name: str, companies: list) -> None:
     return resources_final
 
 
+customers = fetch_company_resources("customers", companies=companies)
+regions = fetch_company_resources(
+    "regions", resource_id="countriesRegions", companies=companies
+)
+items = fetch_company_resources("items", companies=companies)
+sales_invoices = fetch_company_resources(
+    "sales_invoices", resource_id="salesInvoices", companies=companies
+)
 contacts = fetch_company_resources("contacts", companies=companies)
 
 # %%
@@ -412,3 +242,12 @@ write_to_csv(items, "items")
 write_to_csv(customers, "customers")
 write_to_csv(sales_invoices, "sales_invoices")
 write_to_csv(contacts, "contacts")
+
+assert companies, "failed to fetch companies"
+assert regions, "failed to fetch regions"
+assert items, "failed to fetch items"
+assert customers, "failed to fetch customers"
+assert sales_invoices, "failed to fetch sales_invoices"
+assert contacts, "failed to fetch contacts"
+
+# %%
