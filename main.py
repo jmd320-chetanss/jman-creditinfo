@@ -34,7 +34,6 @@ class Options:
     env_name = os.getenv("ENV_NAME")
     scopes = [os.getenv("SCOPE")]
     output_dir = os.getenv("OUTPUT_FOLDER")
-    company_id = os.getenv("COMPANY_ID")
     log_level = os.getenv("LOG_LEVEL") or constants.defult_log_level
     log_format = os.getenv("LOG_FORMAT") or constants.default_log_format
     log_options = True
@@ -75,7 +74,6 @@ if options.log_options:
     logger.info(f"client_secret: {options.client_secret}")
     logger.info(f"tenant_id: {options.tenant_id}")
     logger.info(f"scopes: {options.scopes}")
-    logger.info(f"company_id: {options.company_id}")
     logger.info(f"log_level: {options.log_level}")
     logger.info(f"log_format: {options.log_format}")
     logger.info(constants.section_separator)
