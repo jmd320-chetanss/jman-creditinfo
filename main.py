@@ -343,6 +343,53 @@ logger.info(f"fetching customers done, count: {items_count}.")
 # %%
 
 # ----------------------------------------------------------------------------
+# Fetching contacts
+# ----------------------------------------------------------------------------
+
+
+def fetch_company_resources(resource_name: str, companies: list) -> None:
+
+    logger.info(f"fetching {resource_name}...")
+    resources_final = []
+
+    for company in companies:
+        company_id = company["id"]
+        logger.info(f"fetching {resource_name} for company {company_id}...")
+
+        url = f"{api_prefix}/companies({company_id})/{resource_name}"
+        headers = {"Authorization": f"Bearer {access_token}"}
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != HTTPStatus.OK:
+            ex = exception_from_response(response)
+            logger.error(f"fetching resources failed, error: {ex}")
+            return None
+
+        resources: list = response.json()["value"]
+        resources_count = len(resources)
+
+        for customer in resources:
+            customer.pop("@odata.etag")
+            customer["company"] = company_id
+
+        resources_final.extend(resources)
+
+        logger.info(
+            f"fetching {resource_name} for company {company_id} done, count: {resources_count}."
+        )
+
+    resources_count = len(resources_final)
+    logger.info(f"fetching {resource_name} done, count: {resources_count}.")
+
+    return resources_final
+
+
+contacts = fetch_company_resources("contacts", companies=companies)
+
+# %%
+
+# ----------------------------------------------------------------------------
 # Writing to csv files
 # ----------------------------------------------------------------------------
 
@@ -364,3 +411,4 @@ write_to_csv(regions, "regions")
 write_to_csv(items, "items")
 write_to_csv(customers, "customers")
 write_to_csv(sales_invoices, "sales_invoices")
+write_to_csv(contacts, "contacts")
