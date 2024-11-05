@@ -142,7 +142,7 @@ logger.info("fetching companies...")
 
 companies_result = fetch_companies()
 if companies_result is Exception:
-    logger.info(f"fetching companies failed, error: {companies_result}")
+    logger.error(f"fetching companies failed, error: {companies_result}")
     exit()
 
 companies = companies_result
@@ -186,7 +186,7 @@ logger.info("fetching regions...")
 
 regions_result = fetch_regions(companies=companies)
 if regions_result is Exception:
-    logger.info(f"fetching regions failed, error: {regions_result}")
+    logger.error(f"fetching regions failed, error: {regions_result}")
     exit()
 
 regions = regions_result
@@ -198,8 +198,6 @@ logger.info(f"fetching regions done, count: {len(regions)}")
 # ----------------------------------------------------------------------------
 # Fetching sales invoices
 # ----------------------------------------------------------------------------
-
-reponse_to_exception = exception_from_response
 
 
 def fetch_sales_invoices(companies: list) -> list | Exception:
@@ -214,13 +212,13 @@ def fetch_sales_invoices(companies: list) -> list | Exception:
         response = requests.get(url, headers=headers)
 
         if response.status_code != HTTPStatus.OK:
-            return reponse_to_exception(response)
+            return exception_from_response(response)
 
         sales_invoices = response.json()["value"]
         sales_invoices_count = len(sales_invoices)
         for invoice in sales_invoices:
             invoice.pop("@odata.etag")
-            invoice["company_id"] = company_id
+            invoice["company"] = company_id
 
         logger.info(
             f"fetching sales_invoices for company {company_id}, count: {sales_invoices_count}"
@@ -234,12 +232,62 @@ logger.info("fetching sales_invoices...")
 
 sales_invoices_result = fetch_sales_invoices(companies=companies)
 if sales_invoices_result is Exception:
-    logger.info(f"fetching sales_invoices failed, error: {sales_invoices_result}")
+    logger.error(f"fetching sales_invoices failed, error: {sales_invoices_result}")
     exit()
 
 sales_invoices = sales_invoices_result
 
 logger.info(f"fetching sales_invoices done, count: {len(sales_invoices)}")
+
+
+# %%
+
+# ----------------------------------------------------------------------------
+# Fetching items
+# ----------------------------------------------------------------------------
+
+
+def fetch_items(companies: list) -> list | Exception:
+
+    items_final = []
+
+    for company in companies:
+        company_id = company["id"]
+        logger.info(f"fetching items for company {company_id}...")
+
+        url = f"{api_prefix}/companies({company_id})/items"
+        headers = {"Authorization": f"Bearer {access_token}"}
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != HTTPStatus.OK:
+            return exception_from_response(response)
+
+        items: list = response.json()["value"]
+        items_count = len(items)
+
+        for item in items:
+            item.pop("@odata.etag")
+            item["company"] = company_id
+
+        items_final.extend(items)
+
+        logger.info(f"fetching items for company done, count: {items_count}.")
+
+    return items_final
+
+
+logger.info("fetching items...")
+
+items_result = fetch_items(companies)
+if items_result is Exception:
+    logger.error(f"fetching items failed, error: {items_result}")
+    exit()
+
+items = items_result
+items_count = len(items)
+
+logger.info(f"fetching items done, count: {items_count}.")
 
 # %%
 
@@ -262,4 +310,5 @@ def write_to_csv(data: list, file_name: str) -> None:
 
 write_to_csv(companies, "companies")
 write_to_csv(regions, "regions")
+write_to_csv(items, "items")
 write_to_csv(sales_invoices, "sales_invoices")
