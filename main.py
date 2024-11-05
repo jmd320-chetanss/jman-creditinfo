@@ -1,10 +1,14 @@
 # %%
 
 import requests
-from msal import ConfidentialClientApplication
 import dotenv
 import os
 import logging
+from http import HTTPStatus
+
+# ----------------------------------------------------------------------------
+# Configuration setup
+# ----------------------------------------------------------------------------
 
 # Load env vars
 dotenv.load_dotenv()
@@ -36,8 +40,11 @@ class Options:
 
 options = Options()
 
+# ----------------------------------------------------------------------------
+# Logging setup
+# ----------------------------------------------------------------------------
 
-# setup logging
+
 def create_logger(name: str) -> logging.Logger:
 
     logger = logging.Logger(name)
@@ -57,10 +64,7 @@ def create_logger(name: str) -> logging.Logger:
 
 logger = create_logger("main")
 
-# ----------------------------------------------------------------------------
-# log options if asked
-# ----------------------------------------------------------------------------
-
+# Log options if asked, used to debug
 if options.log_options:
     logger.info(f"logging options...")
     logger.info(constants.section_separator)
@@ -75,40 +79,47 @@ if options.log_options:
     logger.info(f"logging options done.")
 
 # ----------------------------------------------------------------------------
-# MSAL Confidential Client Application
+# Fetching access token
 # ----------------------------------------------------------------------------
 
 
-def get_token():
-    logger.info("creating app...")
+def fetch_access_token() -> str | Exception:
 
-    app = ConfidentialClientApplication(
-        options.client_id,
-        authority=f"https://login.microsoftonline.com/{options.tenant_id}",
-        client_credential=options.client_secret,
-    )
+    url = f"https://login.microsoftonline.com/{options.tenant_id}/oauth2/v2.0/token"
+    payload = {
+        "client_id": options.client_id,
+        "client_secret": options.client_secret,
+        "scope": options.scopes,
+        "grant_type": "client_credentials",
+    }
 
-    logger.info("creating app done.")
+    response = requests.post(url, data=payload)
 
-    # Fetch the access token
-    logger.info("fetching access token...")
+    if response.status_code != HTTPStatus.OK:
+        return Exception(f"code: {response.status_code}, data: {response.json()}")
 
-    token_response = app.acquire_token_for_client(scopes=options.scopes)
-    if "access_token" not in token_response:
-        raise Exception("authentication failed")
-
-    access_token = token_response["access_token"]
-
-    logger.info(f"fetching access token done, access_token: {access_token}")
-
+    access_token = response.json().get("access_token")
     return access_token
 
 
-access_token = get_token()
+logger.info("fetching access token...")
+
+access_token_result = fetch_access_token()
+
+if access_token_result is Exception:
+    print(f"fetching access token failed, error: {access_token_result}")
+    exit()
+
+access_token = access_token_result
+
+logger.info(f"fetching access token done, access_token: {access_token}")
 
 # %%
 
+# ----------------------------------------------------------------------------
 # trying to fetch dummy data
+# ----------------------------------------------------------------------------
+
 url = f"https://api.businesscentral.dynamics.com/v2.0/{options.tenant_id}/sandbox/ODataV4/Company('{options.company_id}')/dynamics_account"
 headers = {
     "Authorization": f"Bearer {access_token}",
