@@ -33,6 +33,7 @@ class Options:
     tenant_id = os.getenv("TENANT_ID")
     env_name = os.getenv("ENV_NAME")
     scopes = [os.getenv("SCOPE")]
+    output_dir = os.getenv("OUTPUT_FOLDER")
     company_id = os.getenv("COMPANY_ID")
     log_level = os.getenv("LOG_LEVEL") or constants.defult_log_level
     log_format = os.getenv("LOG_FORMAT") or constants.default_log_format
@@ -241,3 +242,26 @@ if sales_invoices_result is Exception:
 sales_invoices = sales_invoices_result
 
 logger.info(f"fetching sales_invoices done, count: {len(sales_invoices)}")
+
+# %%
+
+# ----------------------------------------------------------------------------
+# Writing to csv files
+# ----------------------------------------------------------------------------
+
+import csv
+
+
+def write_to_csv(data: list, file_name: str) -> None:
+    os.makedirs(options.output_dir, exist_ok=True)
+    file_path = f"{options.output_dir}/{file_name}.csv"
+
+    with open(file_path, mode="w", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=data[0].keys())
+        writer.writeheader()
+        writer.writerows(data)
+
+
+write_to_csv(companies, "companies")
+write_to_csv(regions, "regions")
+write_to_csv(sales_invoices, "sales_invoices")
