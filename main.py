@@ -191,9 +191,9 @@ def fetch_company_resources(
         resources: list = response.json()["value"]
         resources_count = len(resources)
 
-        for customer in resources:
-            customer.pop("@odata.etag")
-            customer["company"] = company_id
+        for resource in resources:
+            resource.pop("@odata.etag")
+            resource["company"] = company_id
 
         resources_final.extend(resources)
 
@@ -230,7 +230,7 @@ def write_to_csv(data: list, file_name: str) -> None:
     os.makedirs(options.output_dir, exist_ok=True)
     file_path = f"{options.output_dir}/{file_name}.csv"
 
-    with open(file_path, mode="w", newline="") as file:
+    with open(file_path, mode="w", encoding="utf-8", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=data[0].keys())
         writer.writeheader()
         writer.writerows(data)
