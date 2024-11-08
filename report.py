@@ -114,11 +114,34 @@ def calc_validity_id(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
 
     reports = dict[str, QualityReport.Validity]()
     for column_name in df:
-        column_df = df[column_name]
+        column_df = df[column_name].dropna()
         valid_ids = df[column_df.str.match(id_regex)]
 
         total_count = len(column_df)
         valid_count = len(valid_ids)
+        score = (valid_count / total_count) * 100
+
+        report = QualityReport.Validity()
+        report.total_count = total_count
+        report.valid_count = valid_count
+        report.invalid_count = total_count - valid_count
+        report.score = score
+
+        reports[column_name] = report
+
+    return reports
+
+
+def calc_validity_email(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
+    email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+
+    reports = dict[str, QualityReport.Validity]()
+    for column_name in df:
+        column_df = df[column_name].dropna()
+        valid_emails = column_df[column_df.str.match(email_regex)]
+
+        total_count = len(column_df)
+        valid_count = len(valid_emails)
         score = (valid_count / total_count) * 100
 
         report = QualityReport.Validity()
@@ -185,7 +208,11 @@ def calc_contacts_report(contacts: pd.DataFrame) -> QualityReport:
 
     id_validity_columns = contacts[["id", "company"]]
     id_validity_columns_report = calc_validity_id(id_validity_columns)
-    report.validity_columns = id_validity_columns_report
+
+    email_validity_columns = contacts[["email"]]
+    email_validity_columns_report = calc_validity_email(email_validity_columns)
+
+    report.validity_columns = id_validity_columns_report | email_validity_columns_report
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
@@ -212,7 +239,11 @@ def calc_customers_report(customers: pd.DataFrame) -> QualityReport:
         ]
     ]
     id_validity_columns_report = calc_validity_id(id_validity_columns)
-    report.validity_columns = id_validity_columns_report
+
+    email_validity_columns = customers[["email"]]
+    email_validity_columns_report = calc_validity_email(email_validity_columns)
+
+    report.validity_columns = id_validity_columns_report | email_validity_columns_report
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
@@ -288,7 +319,11 @@ def calc_sales_invoices_report(sales_invoices: pd.DataFrame) -> QualityReport:
         ]
     ]
     id_validity_columns_report = calc_validity_id(id_validity_columns)
-    report.validity_columns = id_validity_columns_report
+
+    email_validity_columns = sales_invoices[["email"]]
+    email_validity_columns_report = calc_validity_email(email_validity_columns)
+
+    report.validity_columns = id_validity_columns_report | email_validity_columns_report
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
