@@ -1,0 +1,801 @@
+{
+  "name": "sales_invoices",
+  "completeness_columns": {
+    "id": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "number": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "externalDocumentNumber": {
+      "total_count": 228,
+      "null_count": 226,
+      "value_count": 2,
+      "score": 0.88
+    },
+    "invoiceDate": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "postingDate": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "dueDate": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "promisedPayDate": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "customerPurchaseOrderReference": {
+      "total_count": 228,
+      "null_count": 205,
+      "value_count": 23,
+      "score": 10.09
+    },
+    "customerId": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "customerNumber": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "customerName": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "billToName": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "billToCustomerId": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "billToCustomerNumber": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "shipToName": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "shipToContact": {
+      "total_count": 228,
+      "null_count": 5,
+      "value_count": 223,
+      "score": 97.81
+    },
+    "sellToAddressLine1": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "sellToAddressLine2": {
+      "total_count": 228,
+      "null_count": 154,
+      "value_count": 74,
+      "score": 32.46
+    },
+    "sellToCity": {
+      "total_count": 228,
+      "null_count": 1,
+      "value_count": 227,
+      "score": 99.56
+    },
+    "sellToCountry": {
+      "total_count": 228,
+      "null_count": 2,
+      "value_count": 226,
+      "score": 99.12
+    },
+    "sellToState": {
+      "total_count": 228,
+      "null_count": 167,
+      "value_count": 61,
+      "score": 26.75
+    },
+    "sellToPostCode": {
+      "total_count": 228,
+      "null_count": 1,
+      "value_count": 227,
+      "score": 99.56
+    },
+    "billToAddressLine1": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "billToAddressLine2": {
+      "total_count": 228,
+      "null_count": 154,
+      "value_count": 74,
+      "score": 32.46
+    },
+    "billToCity": {
+      "total_count": 228,
+      "null_count": 1,
+      "value_count": 227,
+      "score": 99.56
+    },
+    "billToCountry": {
+      "total_count": 228,
+      "null_count": 2,
+      "value_count": 226,
+      "score": 99.12
+    },
+    "billToState": {
+      "total_count": 228,
+      "null_count": 167,
+      "value_count": 61,
+      "score": 26.75
+    },
+    "billToPostCode": {
+      "total_count": 228,
+      "null_count": 1,
+      "value_count": 227,
+      "score": 99.56
+    },
+    "shipToAddressLine1": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "shipToAddressLine2": {
+      "total_count": 228,
+      "null_count": 154,
+      "value_count": 74,
+      "score": 32.46
+    },
+    "shipToCity": {
+      "total_count": 228,
+      "null_count": 1,
+      "value_count": 227,
+      "score": 99.56
+    },
+    "shipToCountry": {
+      "total_count": 228,
+      "null_count": 2,
+      "value_count": 226,
+      "score": 99.12
+    },
+    "shipToState": {
+      "total_count": 228,
+      "null_count": 167,
+      "value_count": 61,
+      "score": 26.75
+    },
+    "shipToPostCode": {
+      "total_count": 228,
+      "null_count": 1,
+      "value_count": 227,
+      "score": 99.56
+    },
+    "currencyId": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "shortcutDimension1Code": {
+      "total_count": 228,
+      "null_count": 226,
+      "value_count": 2,
+      "score": 0.88
+    },
+    "shortcutDimension2Code": {
+      "total_count": 228,
+      "null_count": 7,
+      "value_count": 221,
+      "score": 96.93
+    },
+    "currencyCode": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "orderId": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "orderNumber": {
+      "total_count": 228,
+      "null_count": 228,
+      "value_count": 0,
+      "score": 0.0
+    },
+    "paymentTermsId": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "shipmentMethodId": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "salesperson": {
+      "total_count": 228,
+      "null_count": 3,
+      "value_count": 225,
+      "score": 98.68
+    },
+    "disputeStatusId": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "disputeStatus": {
+      "total_count": 228,
+      "null_count": 228,
+      "value_count": 0,
+      "score": 0.0
+    },
+    "pricesIncludeTax": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "remainingAmount": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "discountAmount": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "discountAppliedBeforeTax": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "totalAmountExcludingTax": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "totalTaxAmount": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "totalAmountIncludingTax": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "status": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "lastModifiedDateTime": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    },
+    "phoneNumber": {
+      "total_count": 228,
+      "null_count": 226,
+      "value_count": 2,
+      "score": 0.88
+    },
+    "email": {
+      "total_count": 228,
+      "null_count": 1,
+      "value_count": 227,
+      "score": 99.56
+    },
+    "company": {
+      "total_count": 228,
+      "null_count": 0,
+      "value_count": 228,
+      "score": 100.0
+    }
+  },
+  "uniqueness_columns": {
+    "id": {
+      "total_count": 228,
+      "unique_count": 228,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "number": {
+      "total_count": 228,
+      "unique_count": 228,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "externalDocumentNumber": {
+      "total_count": 2,
+      "unique_count": 2,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "invoiceDate": {
+      "total_count": 228,
+      "unique_count": 172,
+      "duplicate_count": 56,
+      "score": 75.44
+    },
+    "postingDate": {
+      "total_count": 228,
+      "unique_count": 172,
+      "duplicate_count": 56,
+      "score": 75.44
+    },
+    "dueDate": {
+      "total_count": 228,
+      "unique_count": 173,
+      "duplicate_count": 55,
+      "score": 75.88
+    },
+    "promisedPayDate": {
+      "total_count": 228,
+      "unique_count": 1,
+      "duplicate_count": 227,
+      "score": 0.44
+    },
+    "customerPurchaseOrderReference": {
+      "total_count": 23,
+      "unique_count": 2,
+      "duplicate_count": 21,
+      "score": 8.7
+    },
+    "customerId": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "customerNumber": {
+      "total_count": 228,
+      "unique_count": 10,
+      "duplicate_count": 218,
+      "score": 4.39
+    },
+    "customerName": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "billToName": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "billToCustomerId": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "billToCustomerNumber": {
+      "total_count": 228,
+      "unique_count": 10,
+      "duplicate_count": 218,
+      "score": 4.39
+    },
+    "shipToName": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "shipToContact": {
+      "total_count": 223,
+      "unique_count": 6,
+      "duplicate_count": 217,
+      "score": 2.69
+    },
+    "sellToAddressLine1": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "sellToAddressLine2": {
+      "total_count": 74,
+      "unique_count": 3,
+      "duplicate_count": 71,
+      "score": 4.05
+    },
+    "sellToCity": {
+      "total_count": 227,
+      "unique_count": 6,
+      "duplicate_count": 221,
+      "score": 2.64
+    },
+    "sellToCountry": {
+      "total_count": 226,
+      "unique_count": 4,
+      "duplicate_count": 222,
+      "score": 1.77
+    },
+    "sellToState": {
+      "total_count": 61,
+      "unique_count": 1,
+      "duplicate_count": 60,
+      "score": 1.64
+    },
+    "sellToPostCode": {
+      "total_count": 227,
+      "unique_count": 8,
+      "duplicate_count": 219,
+      "score": 3.52
+    },
+    "billToAddressLine1": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "billToAddressLine2": {
+      "total_count": 74,
+      "unique_count": 3,
+      "duplicate_count": 71,
+      "score": 4.05
+    },
+    "billToCity": {
+      "total_count": 227,
+      "unique_count": 6,
+      "duplicate_count": 221,
+      "score": 2.64
+    },
+    "billToCountry": {
+      "total_count": 226,
+      "unique_count": 4,
+      "duplicate_count": 222,
+      "score": 1.77
+    },
+    "billToState": {
+      "total_count": 61,
+      "unique_count": 1,
+      "duplicate_count": 60,
+      "score": 1.64
+    },
+    "billToPostCode": {
+      "total_count": 227,
+      "unique_count": 8,
+      "duplicate_count": 219,
+      "score": 3.52
+    },
+    "shipToAddressLine1": {
+      "total_count": 228,
+      "unique_count": 11,
+      "duplicate_count": 217,
+      "score": 4.82
+    },
+    "shipToAddressLine2": {
+      "total_count": 74,
+      "unique_count": 3,
+      "duplicate_count": 71,
+      "score": 4.05
+    },
+    "shipToCity": {
+      "total_count": 227,
+      "unique_count": 6,
+      "duplicate_count": 221,
+      "score": 2.64
+    },
+    "shipToCountry": {
+      "total_count": 226,
+      "unique_count": 4,
+      "duplicate_count": 222,
+      "score": 1.77
+    },
+    "shipToState": {
+      "total_count": 61,
+      "unique_count": 1,
+      "duplicate_count": 60,
+      "score": 1.64
+    },
+    "shipToPostCode": {
+      "total_count": 227,
+      "unique_count": 8,
+      "duplicate_count": 219,
+      "score": 3.52
+    },
+    "currencyId": {
+      "total_count": 228,
+      "unique_count": 2,
+      "duplicate_count": 226,
+      "score": 0.88
+    },
+    "shortcutDimension1Code": {
+      "total_count": 2,
+      "unique_count": 1,
+      "duplicate_count": 1,
+      "score": 50.0
+    },
+    "shortcutDimension2Code": {
+      "total_count": 221,
+      "unique_count": 3,
+      "duplicate_count": 218,
+      "score": 1.36
+    },
+    "currencyCode": {
+      "total_count": 228,
+      "unique_count": 2,
+      "duplicate_count": 226,
+      "score": 0.88
+    },
+    "orderId": {
+      "total_count": 228,
+      "unique_count": 1,
+      "duplicate_count": 227,
+      "score": 0.44
+    },
+    "orderNumber": {
+      "total_count": 0,
+      "unique_count": 0,
+      "duplicate_count": 0,
+      "score": 100
+    },
+    "paymentTermsId": {
+      "total_count": 228,
+      "unique_count": 9,
+      "duplicate_count": 219,
+      "score": 3.95
+    },
+    "shipmentMethodId": {
+      "total_count": 228,
+      "unique_count": 3,
+      "duplicate_count": 225,
+      "score": 1.32
+    },
+    "salesperson": {
+      "total_count": 225,
+      "unique_count": 4,
+      "duplicate_count": 221,
+      "score": 1.78
+    },
+    "disputeStatusId": {
+      "total_count": 228,
+      "unique_count": 1,
+      "duplicate_count": 227,
+      "score": 0.44
+    },
+    "disputeStatus": {
+      "total_count": 0,
+      "unique_count": 0,
+      "duplicate_count": 0,
+      "score": 100
+    },
+    "pricesIncludeTax": {
+      "total_count": 228,
+      "unique_count": 2,
+      "duplicate_count": 226,
+      "score": 0.88
+    },
+    "remainingAmount": {
+      "total_count": 228,
+      "unique_count": 24,
+      "duplicate_count": 204,
+      "score": 10.53
+    },
+    "discountAmount": {
+      "total_count": 228,
+      "unique_count": 1,
+      "duplicate_count": 227,
+      "score": 0.44
+    },
+    "discountAppliedBeforeTax": {
+      "total_count": 228,
+      "unique_count": 2,
+      "duplicate_count": 226,
+      "score": 0.88
+    },
+    "totalAmountExcludingTax": {
+      "total_count": 228,
+      "unique_count": 121,
+      "duplicate_count": 107,
+      "score": 53.07
+    },
+    "totalTaxAmount": {
+      "total_count": 228,
+      "unique_count": 74,
+      "duplicate_count": 154,
+      "score": 32.46
+    },
+    "totalAmountIncludingTax": {
+      "total_count": 228,
+      "unique_count": 127,
+      "duplicate_count": 101,
+      "score": 55.7
+    },
+    "status": {
+      "total_count": 228,
+      "unique_count": 3,
+      "duplicate_count": 225,
+      "score": 1.32
+    },
+    "lastModifiedDateTime": {
+      "total_count": 228,
+      "unique_count": 228,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "phoneNumber": {
+      "total_count": 2,
+      "unique_count": 2,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "email": {
+      "total_count": 227,
+      "unique_count": 10,
+      "duplicate_count": 217,
+      "score": 4.41
+    },
+    "company": {
+      "total_count": 228,
+      "unique_count": 3,
+      "duplicate_count": 225,
+      "score": 1.32
+    }
+  },
+  "validity_columns": {
+    "id": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "invoiceDate": {
+      "total_count": 228,
+      "valid_count": 0,
+      "invalid_count": 228,
+      "score": 0.0
+    },
+    "postingDate": {
+      "total_count": 228,
+      "valid_count": 0,
+      "invalid_count": 228,
+      "score": 0.0
+    },
+    "dueDate": {
+      "total_count": 228,
+      "valid_count": 0,
+      "invalid_count": 228,
+      "score": 0.0
+    },
+    "promisedPayDate": {
+      "total_count": 228,
+      "valid_count": 0,
+      "invalid_count": 228,
+      "score": 0.0
+    },
+    "customerId": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "billToCustomerId": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "currencyId": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "orderId": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "paymentTermsId": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "shipmentMethodId": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "disputeStatusId": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "lastModifiedDateTime": {
+      "total_count": 228,
+      "valid_count": 0,
+      "invalid_count": 228,
+      "score": 0.0
+    },
+    "email": {
+      "total_count": 227,
+      "valid_count": 227,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "company": {
+      "total_count": 228,
+      "valid_count": 228,
+      "invalid_count": 0,
+      "score": 100.0
+    }
+  },
+  "completeness": {
+    "total_count": 12996,
+    "value_count": 10666,
+    "null_count": 2330,
+    "score": 82.07
+  },
+  "uniqueness": {
+    "total_count": 10666,
+    "unique_count": 1781,
+    "duplicate_count": 8885,
+    "score": 21.91
+  },
+  "validity": {
+    "total_count": 3419,
+    "valid_count": 2279,
+    "invalid_count": 1140,
+    "score": 66.67
+  }
+}

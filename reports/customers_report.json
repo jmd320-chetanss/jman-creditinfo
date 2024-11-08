@@ -1,0 +1,411 @@
+{
+  "name": "customers",
+  "completeness_columns": {
+    "id": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "number": {
+      "total_count": 6974,
+      "null_count": 2,
+      "value_count": 6972,
+      "score": 99.97
+    },
+    "displayName": {
+      "total_count": 6974,
+      "null_count": 4,
+      "value_count": 6970,
+      "score": 99.94
+    },
+    "type": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "addressLine1": {
+      "total_count": 6974,
+      "null_count": 63,
+      "value_count": 6911,
+      "score": 99.1
+    },
+    "addressLine2": {
+      "total_count": 6974,
+      "null_count": 6607,
+      "value_count": 367,
+      "score": 5.26
+    },
+    "city": {
+      "total_count": 6974,
+      "null_count": 467,
+      "value_count": 6507,
+      "score": 93.3
+    },
+    "state": {
+      "total_count": 6974,
+      "null_count": 6973,
+      "value_count": 1,
+      "score": 0.01
+    },
+    "country": {
+      "total_count": 6974,
+      "null_count": 2647,
+      "value_count": 4327,
+      "score": 62.04
+    },
+    "postalCode": {
+      "total_count": 6974,
+      "null_count": 842,
+      "value_count": 6132,
+      "score": 87.93
+    },
+    "phoneNumber": {
+      "total_count": 6974,
+      "null_count": 4858,
+      "value_count": 2116,
+      "score": 30.34
+    },
+    "email": {
+      "total_count": 6974,
+      "null_count": 3550,
+      "value_count": 3424,
+      "score": 49.1
+    },
+    "website": {
+      "total_count": 6974,
+      "null_count": 6589,
+      "value_count": 385,
+      "score": 5.52
+    },
+    "salespersonCode": {
+      "total_count": 6974,
+      "null_count": 6082,
+      "value_count": 892,
+      "score": 12.79
+    },
+    "balanceDue": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "creditLimit": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "taxLiable": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "taxAreaId": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "taxAreaDisplayName": {
+      "total_count": 6974,
+      "null_count": 113,
+      "value_count": 6861,
+      "score": 98.38
+    },
+    "taxRegistrationNumber": {
+      "total_count": 6974,
+      "null_count": 6929,
+      "value_count": 45,
+      "score": 0.65
+    },
+    "currencyId": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "currencyCode": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "paymentTermsId": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "shipmentMethodId": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "paymentMethodId": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "blocked": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "lastModifiedDateTime": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    },
+    "company": {
+      "total_count": 6974,
+      "null_count": 0,
+      "value_count": 6974,
+      "score": 100.0
+    }
+  },
+  "uniqueness_columns": {
+    "id": {
+      "total_count": 6974,
+      "unique_count": 6974,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "number": {
+      "total_count": 6972,
+      "unique_count": 6089,
+      "duplicate_count": 883,
+      "score": 87.34
+    },
+    "displayName": {
+      "total_count": 6970,
+      "unique_count": 6233,
+      "duplicate_count": 737,
+      "score": 89.43
+    },
+    "type": {
+      "total_count": 6974,
+      "unique_count": 1,
+      "duplicate_count": 6973,
+      "score": 0.01
+    },
+    "addressLine1": {
+      "total_count": 6911,
+      "unique_count": 3847,
+      "duplicate_count": 3064,
+      "score": 55.66
+    },
+    "addressLine2": {
+      "total_count": 367,
+      "unique_count": 335,
+      "duplicate_count": 32,
+      "score": 91.28
+    },
+    "city": {
+      "total_count": 6507,
+      "unique_count": 144,
+      "duplicate_count": 6363,
+      "score": 2.21
+    },
+    "state": {
+      "total_count": 1,
+      "unique_count": 1,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "country": {
+      "total_count": 4327,
+      "unique_count": 56,
+      "duplicate_count": 4271,
+      "score": 1.29
+    },
+    "postalCode": {
+      "total_count": 6132,
+      "unique_count": 208,
+      "duplicate_count": 5924,
+      "score": 3.39
+    },
+    "phoneNumber": {
+      "total_count": 2116,
+      "unique_count": 1983,
+      "duplicate_count": 133,
+      "score": 93.71
+    },
+    "email": {
+      "total_count": 3424,
+      "unique_count": 3205,
+      "duplicate_count": 219,
+      "score": 93.6
+    },
+    "website": {
+      "total_count": 385,
+      "unique_count": 361,
+      "duplicate_count": 24,
+      "score": 93.77
+    },
+    "salespersonCode": {
+      "total_count": 892,
+      "unique_count": 20,
+      "duplicate_count": 872,
+      "score": 2.24
+    },
+    "balanceDue": {
+      "total_count": 6974,
+      "unique_count": 709,
+      "duplicate_count": 6265,
+      "score": 10.17
+    },
+    "creditLimit": {
+      "total_count": 6974,
+      "unique_count": 3,
+      "duplicate_count": 6971,
+      "score": 0.04
+    },
+    "taxLiable": {
+      "total_count": 6974,
+      "unique_count": 1,
+      "duplicate_count": 6973,
+      "score": 0.01
+    },
+    "taxAreaId": {
+      "total_count": 6974,
+      "unique_count": 13,
+      "duplicate_count": 6961,
+      "score": 0.19
+    },
+    "taxAreaDisplayName": {
+      "total_count": 6861,
+      "unique_count": 5,
+      "duplicate_count": 6856,
+      "score": 0.07
+    },
+    "taxRegistrationNumber": {
+      "total_count": 45,
+      "unique_count": 40,
+      "duplicate_count": 5,
+      "score": 88.89
+    },
+    "currencyId": {
+      "total_count": 6974,
+      "unique_count": 25,
+      "duplicate_count": 6949,
+      "score": 0.36
+    },
+    "currencyCode": {
+      "total_count": 6974,
+      "unique_count": 13,
+      "duplicate_count": 6961,
+      "score": 0.19
+    },
+    "paymentTermsId": {
+      "total_count": 6974,
+      "unique_count": 30,
+      "duplicate_count": 6944,
+      "score": 0.43
+    },
+    "shipmentMethodId": {
+      "total_count": 6974,
+      "unique_count": 34,
+      "duplicate_count": 6940,
+      "score": 0.49
+    },
+    "paymentMethodId": {
+      "total_count": 6974,
+      "unique_count": 17,
+      "duplicate_count": 6957,
+      "score": 0.24
+    },
+    "blocked": {
+      "total_count": 6974,
+      "unique_count": 2,
+      "duplicate_count": 6972,
+      "score": 0.03
+    },
+    "lastModifiedDateTime": {
+      "total_count": 6974,
+      "unique_count": 1885,
+      "duplicate_count": 5089,
+      "score": 27.03
+    },
+    "company": {
+      "total_count": 6974,
+      "unique_count": 5,
+      "duplicate_count": 6969,
+      "score": 0.07
+    }
+  },
+  "validity_columns": {
+    "id": {
+      "total_count": 6974,
+      "valid_count": 6974,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "email": {
+      "total_count": 3424,
+      "valid_count": 3193,
+      "invalid_count": 231,
+      "score": 93.2535046728972
+    },
+    "taxAreaId": {
+      "total_count": 6974,
+      "valid_count": 6974,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "currencyId": {
+      "total_count": 6974,
+      "valid_count": 6974,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "paymentTermsId": {
+      "total_count": 6974,
+      "valid_count": 6974,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "paymentMethodId": {
+      "total_count": 6974,
+      "valid_count": 6974,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "lastModifiedDateTime": {
+      "total_count": 6974,
+      "valid_count": 0,
+      "invalid_count": 6974,
+      "score": 0.0
+    },
+    "company": {
+      "total_count": 6974,
+      "valid_count": 6974,
+      "invalid_count": 0,
+      "score": 100.0
+    }
+  },
+  "completeness": {
+    "total_count": 195272,
+    "value_count": 149546,
+    "null_count": 45726,
+    "score": 76.58
+  },
+  "uniqueness": {
+    "total_count": 149546,
+    "unique_count": 32239,
+    "duplicate_count": 117307,
+    "score": 33.65
+  },
+  "validity": {
+    "total_count": 52242,
+    "valid_count": 45037,
+    "invalid_count": 7205,
+    "score": 86.66
+  }
+}

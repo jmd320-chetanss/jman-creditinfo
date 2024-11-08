@@ -1,0 +1,345 @@
+{
+  "name": "contacts",
+  "completeness_columns": {
+    "id": {
+      "total_count": 448,
+      "null_count": 0,
+      "value_count": 448,
+      "score": 100.0
+    },
+    "number": {
+      "total_count": 448,
+      "null_count": 2,
+      "value_count": 446,
+      "score": 99.55
+    },
+    "type": {
+      "total_count": 448,
+      "null_count": 0,
+      "value_count": 448,
+      "score": 100.0
+    },
+    "displayName": {
+      "total_count": 448,
+      "null_count": 2,
+      "value_count": 446,
+      "score": 99.55
+    },
+    "jobTitle": {
+      "total_count": 448,
+      "null_count": 448,
+      "value_count": 0,
+      "score": 0.0
+    },
+    "companyNumber": {
+      "total_count": 448,
+      "null_count": 8,
+      "value_count": 440,
+      "score": 98.21
+    },
+    "companyName": {
+      "total_count": 448,
+      "null_count": 8,
+      "value_count": 440,
+      "score": 98.21
+    },
+    "contactBusinessRelation": {
+      "total_count": 448,
+      "null_count": 0,
+      "value_count": 448,
+      "score": 100.0
+    },
+    "addressLine1": {
+      "total_count": 448,
+      "null_count": 3,
+      "value_count": 445,
+      "score": 99.33
+    },
+    "addressLine2": {
+      "total_count": 448,
+      "null_count": 432,
+      "value_count": 16,
+      "score": 3.57
+    },
+    "city": {
+      "total_count": 448,
+      "null_count": 3,
+      "value_count": 445,
+      "score": 99.33
+    },
+    "state": {
+      "total_count": 448,
+      "null_count": 444,
+      "value_count": 4,
+      "score": 0.89
+    },
+    "country": {
+      "total_count": 448,
+      "null_count": 7,
+      "value_count": 441,
+      "score": 98.44
+    },
+    "postalCode": {
+      "total_count": 448,
+      "null_count": 3,
+      "value_count": 445,
+      "score": 99.33
+    },
+    "phoneNumber": {
+      "total_count": 448,
+      "null_count": 448,
+      "value_count": 0,
+      "score": 0.0
+    },
+    "mobilePhoneNumber": {
+      "total_count": 448,
+      "null_count": 448,
+      "value_count": 0,
+      "score": 0.0
+    },
+    "email": {
+      "total_count": 448,
+      "null_count": 9,
+      "value_count": 439,
+      "score": 97.99
+    },
+    "website": {
+      "total_count": 448,
+      "null_count": 445,
+      "value_count": 3,
+      "score": 0.67
+    },
+    "searchName": {
+      "total_count": 448,
+      "null_count": 2,
+      "value_count": 446,
+      "score": 99.55
+    },
+    "privacyBlocked": {
+      "total_count": 448,
+      "null_count": 0,
+      "value_count": 448,
+      "score": 100.0
+    },
+    "taxRegistrationNumber": {
+      "total_count": 448,
+      "null_count": 366,
+      "value_count": 82,
+      "score": 18.3
+    },
+    "lastInteractionDate": {
+      "total_count": 448,
+      "null_count": 0,
+      "value_count": 448,
+      "score": 100.0
+    },
+    "lastModifiedDateTime": {
+      "total_count": 448,
+      "null_count": 0,
+      "value_count": 448,
+      "score": 100.0
+    },
+    "company": {
+      "total_count": 448,
+      "null_count": 0,
+      "value_count": 448,
+      "score": 100.0
+    }
+  },
+  "uniqueness_columns": {
+    "id": {
+      "total_count": 448,
+      "unique_count": 448,
+      "duplicate_count": 0,
+      "score": 100.0
+    },
+    "number": {
+      "total_count": 446,
+      "unique_count": 423,
+      "duplicate_count": 23,
+      "score": 94.84
+    },
+    "type": {
+      "total_count": 448,
+      "unique_count": 2,
+      "duplicate_count": 446,
+      "score": 0.45
+    },
+    "displayName": {
+      "total_count": 446,
+      "unique_count": 438,
+      "duplicate_count": 8,
+      "score": 98.21
+    },
+    "jobTitle": {
+      "total_count": 0,
+      "unique_count": 0,
+      "duplicate_count": 0,
+      "score": 100
+    },
+    "companyNumber": {
+      "total_count": 440,
+      "unique_count": 167,
+      "duplicate_count": 273,
+      "score": 37.95
+    },
+    "companyName": {
+      "total_count": 440,
+      "unique_count": 172,
+      "duplicate_count": 268,
+      "score": 39.09
+    },
+    "contactBusinessRelation": {
+      "total_count": 448,
+      "unique_count": 4,
+      "duplicate_count": 444,
+      "score": 0.89
+    },
+    "addressLine1": {
+      "total_count": 445,
+      "unique_count": 181,
+      "duplicate_count": 264,
+      "score": 40.67
+    },
+    "addressLine2": {
+      "total_count": 16,
+      "unique_count": 9,
+      "duplicate_count": 7,
+      "score": 56.25
+    },
+    "city": {
+      "total_count": 445,
+      "unique_count": 123,
+      "duplicate_count": 322,
+      "score": 27.64
+    },
+    "state": {
+      "total_count": 4,
+      "unique_count": 2,
+      "duplicate_count": 2,
+      "score": 50.0
+    },
+    "country": {
+      "total_count": 441,
+      "unique_count": 19,
+      "duplicate_count": 422,
+      "score": 4.31
+    },
+    "postalCode": {
+      "total_count": 445,
+      "unique_count": 148,
+      "duplicate_count": 297,
+      "score": 33.26
+    },
+    "phoneNumber": {
+      "total_count": 0,
+      "unique_count": 0,
+      "duplicate_count": 0,
+      "score": 100
+    },
+    "mobilePhoneNumber": {
+      "total_count": 0,
+      "unique_count": 0,
+      "duplicate_count": 0,
+      "score": 100
+    },
+    "email": {
+      "total_count": 439,
+      "unique_count": 432,
+      "duplicate_count": 7,
+      "score": 98.41
+    },
+    "website": {
+      "total_count": 3,
+      "unique_count": 1,
+      "duplicate_count": 2,
+      "score": 33.33
+    },
+    "searchName": {
+      "total_count": 446,
+      "unique_count": 438,
+      "duplicate_count": 8,
+      "score": 98.21
+    },
+    "privacyBlocked": {
+      "total_count": 448,
+      "unique_count": 1,
+      "duplicate_count": 447,
+      "score": 0.22
+    },
+    "taxRegistrationNumber": {
+      "total_count": 82,
+      "unique_count": 73,
+      "duplicate_count": 9,
+      "score": 89.02
+    },
+    "lastInteractionDate": {
+      "total_count": 448,
+      "unique_count": 26,
+      "duplicate_count": 422,
+      "score": 5.8
+    },
+    "lastModifiedDateTime": {
+      "total_count": 448,
+      "unique_count": 24,
+      "duplicate_count": 424,
+      "score": 5.36
+    },
+    "company": {
+      "total_count": 448,
+      "unique_count": 4,
+      "duplicate_count": 444,
+      "score": 0.89
+    }
+  },
+  "validity_columns": {
+    "id": {
+      "total_count": 448,
+      "valid_count": 448,
+      "invalid_count": 0,
+      "score": 100.0
+    },
+    "email": {
+      "total_count": 439,
+      "valid_count": 430,
+      "invalid_count": 9,
+      "score": 97.9498861047836
+    },
+    "lastInteractionDate": {
+      "total_count": 448,
+      "valid_count": 0,
+      "invalid_count": 448,
+      "score": 0.0
+    },
+    "lastModifiedDateTime": {
+      "total_count": 448,
+      "valid_count": 0,
+      "invalid_count": 448,
+      "score": 0.0
+    },
+    "company": {
+      "total_count": 448,
+      "valid_count": 448,
+      "invalid_count": 0,
+      "score": 100.0
+    }
+  },
+  "completeness": {
+    "total_count": 10752,
+    "value_count": 7674,
+    "null_count": 3078,
+    "score": 71.37
+  },
+  "uniqueness": {
+    "total_count": 7674,
+    "unique_count": 3135,
+    "duplicate_count": 4539,
+    "score": 50.62
+  },
+  "validity": {
+    "total_count": 2231,
+    "valid_count": 1326,
+    "invalid_count": 905,
+    "score": 59.59
+  }
+}

@@ -183,6 +183,32 @@ def calc_validity_timestamp(df: pd.DataFrame) -> dict[str, QualityReport.Validit
     return reports
 
 
+def calc_validity_datetime(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
+    reports = dict[str, QualityReport.Validity]()
+
+    for column_name in df:
+        column_df = df[column_name]
+        date_format = "%m/%d/%Y %H:%M"
+
+        converted_df = pd.to_datetime(column_df, format=date_format, errors="coerce")
+        valid_datetimes = df[converted_df.notnull()]
+
+        total_count = len(df)
+        valid_count = len(valid_datetimes)
+        score = (valid_count / total_count) * 100
+        score = round(score, 2)
+
+        report = QualityReport.Validity()
+        report.total_count = total_count
+        report.valid_count = valid_count
+        report.invalid_count = total_count - valid_count
+        report.score = score
+
+        reports[column_name] = report
+
+    return reports
+
+
 def calc_validity(
     df: pd.DataFrame, strategy_map: dict[str, str]
 ) -> dict[str, QualityReport.Validity]:
@@ -192,6 +218,7 @@ def calc_validity(
             "id": calc_validity_id,
             "email": calc_validity_email,
             "timestamp": calc_validity_timestamp,
+            "datetime": calc_validity_datetime,
         }
 
         return map.get(id)
@@ -254,6 +281,8 @@ def calc_companies_report(companies: pd.DataFrame) -> QualityReport:
             "systemCreatedBy": "id",
             "systemModifiedBy": "id",
             "timestamp": "timestamp",
+            "systemCreatedAt": "datetime",
+            "systemModifiedAt": "datetime",
         },
     )
 
@@ -277,6 +306,8 @@ def calc_contacts_report(contacts: pd.DataFrame) -> QualityReport:
             "id": "id",
             "company": "id",
             "email": "email",
+            "lastInteractionDate": "datetime",
+            "lastModifiedDateTime": "datetime",
         },
     )
 
@@ -304,6 +335,7 @@ def calc_customers_report(customers: pd.DataFrame) -> QualityReport:
             "paymentMethodId": "id",
             "company": "id",
             "email": "email",
+            "lastModifiedDateTime": "datetime",
         },
     )
 
@@ -331,6 +363,7 @@ def calc_items_report(items: pd.DataFrame) -> QualityReport:
             "generalProductPostingGroupId": "id",
             "inventoryPostingGroupId": "id",
             "company": "id",
+            "lastModifiedDateTime": "datetime",
         },
     )
 
@@ -353,6 +386,7 @@ def calc_regions_report(regions: pd.DataFrame) -> QualityReport:
         strategy_map={
             "id": "id",
             "company": "id",
+            "lastModifiedDateTime": "datetime",
         },
     )
 
@@ -383,6 +417,11 @@ def calc_sales_invoices_report(sales_invoices: pd.DataFrame) -> QualityReport:
             "disputeStatusId": "id",
             "company": "id",
             "email": "email",
+            "invoiceDate": "datetime",
+            "postingDate": "datetime",
+            "dueDate": "datetime",
+            "promisedPayDate": "datetime",
+            "lastModifiedDateTime": "datetime",
         },
     )
 
