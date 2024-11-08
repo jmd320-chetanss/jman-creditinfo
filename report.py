@@ -471,19 +471,23 @@ def report_to_json_file(report: QualityReport, filepath: str):
         file.write(json_string)
 
 
+datasets_folder = "out/datasets"
+reports_folder = "out/reports"
+
+
 def load_companies() -> pd.DataFrame:
-    df = pd.read_csv("out/companies.csv")
+    df = pd.read_csv(f"{datasets_folder}/companies.csv")
     df["businessProfileId"] = df["businessProfileId"].astype(str)
 
     return df
 
 
 companies_df = load_companies()
-contacts_df = pd.read_csv("out/contacts.csv")
-customers_df = pd.read_csv("out/customers.csv")
-items_df = pd.read_csv("out/items.csv")
-regions_df = pd.read_csv("out/regions.csv")
-sales_invoices_df = pd.read_csv("out/sales_invoices.csv")
+contacts_df = pd.read_csv(f"{datasets_folder}/contacts.csv")
+customers_df = pd.read_csv(f"{datasets_folder}/customers.csv")
+items_df = pd.read_csv(f"{datasets_folder}/items.csv")
+regions_df = pd.read_csv(f"{datasets_folder}/regions.csv")
+sales_invoices_df = pd.read_csv(f"{datasets_folder}/sales_invoices.csv")
 
 companies_report = calc_companies_report(companies_df)
 contacts_report = calc_contacts_report(contacts_df)
@@ -492,9 +496,11 @@ items_report = calc_items_report(items_df)
 regions_report = calc_regions_report(regions_df)
 sales_invoices_report = calc_sales_invoices_report(sales_invoices_df)
 
-report_to_json_file(companies_report, "reports/companies_report.json")
-report_to_json_file(contacts_report, "reports/contacts_report.json")
-report_to_json_file(customers_report, "reports/customers_report.json")
-report_to_json_file(items_report, "reports/items_report.json")
-report_to_json_file(regions_report, "reports/regions_report.json")
-report_to_json_file(sales_invoices_report, "reports/sales_invoices_report.json")
+report_to_json_file(companies_report, f"{reports_folder}/companies_report.json")
+report_to_json_file(contacts_report, f"{reports_folder}/contacts_report.json")
+report_to_json_file(customers_report, f"{reports_folder}/customers_report.json")
+report_to_json_file(items_report, f"{reports_folder}/items_report.json")
+report_to_json_file(regions_report, f"{reports_folder}/regions_report.json")
+report_to_json_file(
+    sales_invoices_report, f"{reports_folder}/sales_invoices_report.json"
+)
