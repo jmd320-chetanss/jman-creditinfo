@@ -107,6 +107,48 @@ def calc_total_uniqueness(
     return report
 
 
+def calc_validity_id(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
+    id_regex = (
+        r"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+    )
+
+    reports = dict[str, QualityReport.Validity]()
+    for column_name in df:
+        column_df = df[column_name]
+        valid_ids = df[column_df.str.match(id_regex)]
+
+        total_count = len(column_df)
+        valid_count = len(valid_ids)
+        score = (valid_count / total_count) * 100
+
+        report = QualityReport.Validity()
+        report.total_count = total_count
+        report.valid_count = valid_count
+        report.invalid_count = total_count - valid_count
+        report.score = score
+
+        reports[column_name] = report
+
+    return reports
+
+
+def calc_total_validity(
+    reports: list[QualityReport.Validity],
+) -> QualityReport.Validity:
+    report = QualityReport.Validity()
+    report.total_count = sum([report.total_count for report in reports])
+    report.valid_count = sum([report.valid_count for report in reports])
+    report.invalid_count = sum([report.invalid_count for report in reports])
+
+    report.score = (
+        round(sum([report.score for report in reports]) / len(reports), 2)
+        if len(reports)
+        else 0
+    )
+
+    return report
+
+
 def calc_companies_report(companies: pd.DataFrame) -> QualityReport:
     report = QualityReport()
     report.name = "companies"
@@ -123,8 +165,13 @@ def calc_companies_report(companies: pd.DataFrame) -> QualityReport:
         ]
     )
 
+    id_validity_columns = companies[["id", "systemCreatedBy", "systemModifiedBy"]]
+    id_validity_columns_report = calc_validity_id(id_validity_columns)
+    report.validity_columns = id_validity_columns_report
+
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
+    report.validity = calc_total_validity(report.validity_columns.values())
 
     return report
 
@@ -136,8 +183,13 @@ def calc_contacts_report(contacts: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(contacts)
     report.uniqueness_columns = calc_uniqueness(contacts)
 
+    id_validity_columns = contacts[["id", "company"]]
+    id_validity_columns_report = calc_validity_id(id_validity_columns)
+    report.validity_columns = id_validity_columns_report
+
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
+    report.validity = calc_total_validity(report.validity_columns.values())
 
     return report
 
@@ -149,8 +201,22 @@ def calc_customers_report(customers: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(customers)
     report.uniqueness_columns = calc_uniqueness(customers)
 
+    id_validity_columns = customers[
+        [
+            "id",
+            "taxAreaId",
+            "currencyId",
+            "paymentTermsId",
+            "paymentMethodId",
+            "company",
+        ]
+    ]
+    id_validity_columns_report = calc_validity_id(id_validity_columns)
+    report.validity_columns = id_validity_columns_report
+
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
+    report.validity = calc_total_validity(report.validity_columns.values())
 
     return report
 
@@ -162,8 +228,23 @@ def calc_items_report(items: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(items)
     report.uniqueness_columns = calc_uniqueness(items)
 
+    id_validity_columns = items[
+        [
+            "id",
+            "itemCategoryId",
+            "taxGroupId",
+            "baseUnitOfMeasureId",
+            "generalProductPostingGroupId",
+            "inventoryPostingGroupId",
+            "company",
+        ]
+    ]
+    id_validity_columns_report = calc_validity_id(id_validity_columns)
+    report.validity_columns = id_validity_columns_report
+
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
+    report.validity = calc_total_validity(report.validity_columns.values())
 
     return report
 
@@ -175,8 +256,13 @@ def calc_regions_report(regions: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(regions)
     report.uniqueness_columns = calc_uniqueness(regions)
 
+    id_validity_columns = regions[["id", "company"]]
+    id_validity_columns_report = calc_validity_id(id_validity_columns)
+    report.validity_columns = id_validity_columns_report
+
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
+    report.validity = calc_total_validity(report.validity_columns.values())
 
     return report
 
@@ -188,8 +274,25 @@ def calc_sales_invoices_report(sales_invoices: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(sales_invoices)
     report.uniqueness_columns = calc_uniqueness(sales_invoices)
 
+    id_validity_columns = sales_invoices[
+        [
+            "id",
+            "customerId",
+            "billToCustomerId",
+            "currencyId",
+            "orderId",
+            "paymentTermsId",
+            "shipmentMethodId",
+            "disputeStatusId",
+            "company",
+        ]
+    ]
+    id_validity_columns_report = calc_validity_id(id_validity_columns)
+    report.validity_columns = id_validity_columns_report
+
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
+    report.validity = calc_total_validity(report.validity_columns.values())
 
     return report
 
