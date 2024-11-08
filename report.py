@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+from datetime import datetime
 
 
 class QualityReport:
@@ -155,6 +156,33 @@ def calc_validity_email(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
     return reports
 
 
+def calc_validity_timestamp(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
+
+    reports = dict[str, QualityReport.Validity]()
+    for column_name in df:
+        column_df = df[column_name]
+        converted_df = pd.to_datetime(column_df, unit="s", errors="coerce")
+
+        valid_timestamps = column_df[
+            (converted_df <= datetime.now()) & (converted_df.notnull())
+        ]
+
+        total_count = len(df)
+        valid_count = len(valid_timestamps)
+        score = (valid_count / total_count) * 100
+        score = round(score, 2)
+
+        report = QualityReport.Validity()
+        report.total_count = total_count
+        report.valid_count = valid_count
+        report.invalid_count = total_count - valid_count
+        report.score = score
+
+        reports[column_name] = report
+
+    return reports
+
+
 def calc_validity(
     df: pd.DataFrame, strategy_map: dict[str, str]
 ) -> dict[str, QualityReport.Validity]:
@@ -163,6 +191,7 @@ def calc_validity(
         map = {
             "id": calc_validity_id,
             "email": calc_validity_email,
+            "timestamp": calc_validity_timestamp,
         }
 
         return map.get(id)
@@ -221,8 +250,10 @@ def calc_companies_report(companies: pd.DataFrame) -> QualityReport:
         companies,
         strategy_map={
             "id": "id",
+            "businessProfileId": "id",
             "systemCreatedBy": "id",
             "systemModifiedBy": "id",
+            "timestamp": "timestamp",
         },
     )
 
@@ -372,7 +403,14 @@ def report_to_json_file(report: QualityReport, filepath: str):
         file.write(json_string)
 
 
-companies_df = pd.read_csv("out/companies.csv")
+def load_companies() -> pd.DataFrame:
+    df = pd.read_csv("out/companies.csv")
+    df["businessProfileId"] = df["businessProfileId"].astype(str)
+
+    return df
+
+
+companies_df = load_companies()
 contacts_df = pd.read_csv("out/contacts.csv")
 customers_df = pd.read_csv("out/customers.csv")
 items_df = pd.read_csv("out/items.csv")
