@@ -293,6 +293,12 @@
       "invalid_count": 0,
       "score": 100.0
     },
+    "blocked": {
+      "total_count": 501,
+      "valid_count": 0,
+      "invalid_count": 501,
+      "score": 0.0
+    },
     "taxGroupId": {
       "total_count": 501,
       "valid_count": 501,
@@ -343,9 +349,9 @@
     "score": 29.57
   },
   "validity": {
-    "total_count": 4008,
+    "total_count": 4509,
     "valid_count": 3507,
-    "invalid_count": 501,
-    "score": 87.5
+    "invalid_count": 1002,
+    "score": 77.78
   }
 }

@@ -761,6 +761,18 @@
       "invalid_count": 0,
       "score": 100.0
     },
+    "pricesIncludeTax": {
+      "total_count": 228,
+      "valid_count": 0,
+      "invalid_count": 228,
+      "score": 0.0
+    },
+    "discountAppliedBeforeTax": {
+      "total_count": 228,
+      "valid_count": 0,
+      "invalid_count": 228,
+      "score": 0.0
+    },
     "lastModifiedDateTime": {
       "total_count": 228,
       "valid_count": 0,
@@ -793,9 +805,9 @@
     "score": 21.91
   },
   "validity": {
-    "total_count": 3419,
+    "total_count": 3875,
     "valid_count": 2279,
-    "invalid_count": 1140,
-    "score": 66.67
+    "invalid_count": 1596,
+    "score": 58.82
   }
 }

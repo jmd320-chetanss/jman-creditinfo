@@ -353,6 +353,12 @@
       "invalid_count": 231,
       "score": 93.2535046728972
     },
+    "taxLiable": {
+      "total_count": 6974,
+      "valid_count": 0,
+      "invalid_count": 6974,
+      "score": 0.0
+    },
     "taxAreaId": {
       "total_count": 6974,
       "valid_count": 6974,
@@ -376,6 +382,12 @@
       "valid_count": 6974,
       "invalid_count": 0,
       "score": 100.0
+    },
+    "blocked": {
+      "total_count": 6974,
+      "valid_count": 0,
+      "invalid_count": 6974,
+      "score": 0.0
     },
     "lastModifiedDateTime": {
       "total_count": 6974,
@@ -403,9 +415,9 @@
     "score": 33.65
   },
   "validity": {
-    "total_count": 52242,
+    "total_count": 66190,
     "valid_count": 45037,
-    "invalid_count": 7205,
-    "score": 86.66
+    "invalid_count": 21153,
+    "score": 69.33
   }
 }

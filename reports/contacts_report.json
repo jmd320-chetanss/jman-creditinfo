@@ -305,6 +305,12 @@
       "invalid_count": 9,
       "score": 97.9498861047836
     },
+    "privacyBlocked": {
+      "total_count": 448,
+      "valid_count": 0,
+      "invalid_count": 448,
+      "score": 0.0
+    },
     "lastInteractionDate": {
       "total_count": 448,
       "valid_count": 0,
@@ -337,9 +343,9 @@
     "score": 50.62
   },
   "validity": {
-    "total_count": 2231,
+    "total_count": 2679,
     "valid_count": 1326,
-    "invalid_count": 905,
-    "score": 59.59
+    "invalid_count": 1353,
+    "score": 49.66
   }
 }

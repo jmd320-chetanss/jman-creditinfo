@@ -185,7 +185,6 @@ def calc_validity_timestamp(df: pd.DataFrame) -> dict[str, QualityReport.Validit
 
 def calc_validity_datetime(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
     reports = dict[str, QualityReport.Validity]()
-
     for column_name in df:
         column_df = df[column_name]
         date_format = "%m/%d/%Y %H:%M"
@@ -209,6 +208,29 @@ def calc_validity_datetime(df: pd.DataFrame) -> dict[str, QualityReport.Validity
     return reports
 
 
+def calc_validity_bool(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
+    reports = dict[str, QualityReport.Validity]()
+    for column_name in df:
+        column_df = df[column_name]
+
+        valid_bool_values = ["TRUE", "FALSE"]
+        valid_bools = column_df[column_df.isin(valid_bool_values)]
+
+        total_count = len(column_df)
+        valid_count = len(valid_bools)
+        score = (valid_count / total_count) * 100
+
+        report = QualityReport.Validity()
+        report.total_count = total_count
+        report.valid_count = valid_count
+        report.invalid_count = total_count - valid_count
+        report.score = score
+
+        reports[column_name] = report
+
+    return reports
+
+
 def calc_validity(
     df: pd.DataFrame, strategy_map: dict[str, str]
 ) -> dict[str, QualityReport.Validity]:
@@ -219,6 +241,7 @@ def calc_validity(
             "email": calc_validity_email,
             "timestamp": calc_validity_timestamp,
             "datetime": calc_validity_datetime,
+            "bool": calc_validity_bool,
         }
 
         return map.get(id)
@@ -308,6 +331,7 @@ def calc_contacts_report(contacts: pd.DataFrame) -> QualityReport:
             "email": "email",
             "lastInteractionDate": "datetime",
             "lastModifiedDateTime": "datetime",
+            "privacyBlocked": "bool",
         },
     )
 
@@ -336,6 +360,8 @@ def calc_customers_report(customers: pd.DataFrame) -> QualityReport:
             "company": "id",
             "email": "email",
             "lastModifiedDateTime": "datetime",
+            "taxLiable": "bool",
+            "blocked": "bool",
         },
     )
 
@@ -364,6 +390,7 @@ def calc_items_report(items: pd.DataFrame) -> QualityReport:
             "inventoryPostingGroupId": "id",
             "company": "id",
             "lastModifiedDateTime": "datetime",
+            "blocked": "bool",
         },
     )
 
@@ -422,6 +449,8 @@ def calc_sales_invoices_report(sales_invoices: pd.DataFrame) -> QualityReport:
             "dueDate": "datetime",
             "promisedPayDate": "datetime",
             "lastModifiedDateTime": "datetime",
+            "pricesIncludeTax": "bool",
+            "discountAppliedBeforeTax": "bool",
         },
     )
 
