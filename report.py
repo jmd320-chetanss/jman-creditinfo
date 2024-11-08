@@ -155,6 +155,35 @@ def calc_validity_email(df: pd.DataFrame) -> dict[str, QualityReport.Validity]:
     return reports
 
 
+def calc_validity(
+    df: pd.DataFrame, strategy_map: dict[str, str]
+) -> dict[str, QualityReport.Validity]:
+
+    def get_validator(id: str):
+        map = {
+            "id": calc_validity_id,
+            "email": calc_validity_email,
+        }
+
+        return map.get(id)
+
+    reports = dict[str, QualityReport.Validity]()
+    for column_name in df:
+        column_df = df[column_name]
+
+        validator_id = strategy_map.get(column_name)
+        if validator_id is None:
+            continue
+
+        validator = get_validator(validator_id)
+        if validator is None:
+            continue
+
+        reports |= validator(pd.DataFrame(column_df))
+
+    return reports
+
+
 def calc_total_validity(
     reports: list[QualityReport.Validity],
 ) -> QualityReport.Validity:
@@ -188,9 +217,14 @@ def calc_companies_report(companies: pd.DataFrame) -> QualityReport:
         ]
     )
 
-    id_validity_columns = companies[["id", "systemCreatedBy", "systemModifiedBy"]]
-    id_validity_columns_report = calc_validity_id(id_validity_columns)
-    report.validity_columns = id_validity_columns_report
+    report.validity_columns = calc_validity(
+        companies,
+        strategy_map={
+            "id": "id",
+            "systemCreatedBy": "id",
+            "systemModifiedBy": "id",
+        },
+    )
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
@@ -206,13 +240,14 @@ def calc_contacts_report(contacts: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(contacts)
     report.uniqueness_columns = calc_uniqueness(contacts)
 
-    id_validity_columns = contacts[["id", "company"]]
-    id_validity_columns_report = calc_validity_id(id_validity_columns)
-
-    email_validity_columns = contacts[["email"]]
-    email_validity_columns_report = calc_validity_email(email_validity_columns)
-
-    report.validity_columns = id_validity_columns_report | email_validity_columns_report
+    report.validity_columns = calc_validity(
+        contacts,
+        strategy_map={
+            "id": "id",
+            "company": "id",
+            "email": "email",
+        },
+    )
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
@@ -228,22 +263,18 @@ def calc_customers_report(customers: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(customers)
     report.uniqueness_columns = calc_uniqueness(customers)
 
-    id_validity_columns = customers[
-        [
-            "id",
-            "taxAreaId",
-            "currencyId",
-            "paymentTermsId",
-            "paymentMethodId",
-            "company",
-        ]
-    ]
-    id_validity_columns_report = calc_validity_id(id_validity_columns)
-
-    email_validity_columns = customers[["email"]]
-    email_validity_columns_report = calc_validity_email(email_validity_columns)
-
-    report.validity_columns = id_validity_columns_report | email_validity_columns_report
+    report.validity_columns = calc_validity(
+        customers,
+        strategy_map={
+            "id": "id",
+            "taxAreaId": "id",
+            "currencyId": "id",
+            "paymentTermsId": "id",
+            "paymentMethodId": "id",
+            "company": "id",
+            "email": "email",
+        },
+    )
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
@@ -259,19 +290,18 @@ def calc_items_report(items: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(items)
     report.uniqueness_columns = calc_uniqueness(items)
 
-    id_validity_columns = items[
-        [
-            "id",
-            "itemCategoryId",
-            "taxGroupId",
-            "baseUnitOfMeasureId",
-            "generalProductPostingGroupId",
-            "inventoryPostingGroupId",
-            "company",
-        ]
-    ]
-    id_validity_columns_report = calc_validity_id(id_validity_columns)
-    report.validity_columns = id_validity_columns_report
+    report.validity_columns = calc_validity(
+        items,
+        strategy_map={
+            "id": "id",
+            "itemCategoryId": "id",
+            "taxGroupId": "id",
+            "baseUnitOfMeasureId": "id",
+            "generalProductPostingGroupId": "id",
+            "inventoryPostingGroupId": "id",
+            "company": "id",
+        },
+    )
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
@@ -287,9 +317,13 @@ def calc_regions_report(regions: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(regions)
     report.uniqueness_columns = calc_uniqueness(regions)
 
-    id_validity_columns = regions[["id", "company"]]
-    id_validity_columns_report = calc_validity_id(id_validity_columns)
-    report.validity_columns = id_validity_columns_report
+    report.validity_columns = calc_validity(
+        regions,
+        strategy_map={
+            "id": "id",
+            "company": "id",
+        },
+    )
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
@@ -305,25 +339,21 @@ def calc_sales_invoices_report(sales_invoices: pd.DataFrame) -> QualityReport:
     report.completeness_columns = calc_completeness(sales_invoices)
     report.uniqueness_columns = calc_uniqueness(sales_invoices)
 
-    id_validity_columns = sales_invoices[
-        [
-            "id",
-            "customerId",
-            "billToCustomerId",
-            "currencyId",
-            "orderId",
-            "paymentTermsId",
-            "shipmentMethodId",
-            "disputeStatusId",
-            "company",
-        ]
-    ]
-    id_validity_columns_report = calc_validity_id(id_validity_columns)
-
-    email_validity_columns = sales_invoices[["email"]]
-    email_validity_columns_report = calc_validity_email(email_validity_columns)
-
-    report.validity_columns = id_validity_columns_report | email_validity_columns_report
+    report.validity_columns = calc_validity(
+        sales_invoices,
+        strategy_map={
+            "id": "id",
+            "customerId": "id",
+            "billToCustomerId": "id",
+            "currencyId": "id",
+            "orderId": "id",
+            "paymentTermsId": "id",
+            "shipmentMethodId": "id",
+            "disputeStatusId": "id",
+            "company": "id",
+            "email": "email",
+        },
+    )
 
     report.completeness = calc_total_completeness(report.completeness_columns.values())
     report.uniqueness = calc_total_uniqueness(report.uniqueness_columns.values())
