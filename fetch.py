@@ -28,11 +28,10 @@ constants = Constants()
 
 # configuration
 class Options:
-    client_id = os.getenv("CLIENT_ID")
-    client_secret = os.getenv("CLIENT_SECRET")
-    tenant_id = os.getenv("TENANT_ID")
-    env_name = os.getenv("ENV_NAME")
-    scopes = [os.getenv("SCOPE")]
+    ntlm_domain = os.getenv("NTLM_DOMAIN")
+    ntlm_user = os.getenv("NTLM_USER")
+    ntlm_password = os.getenv("NTLM_PASSWORD")
+    nav_url = os.getenv("NAV_URL")
     output_dir = os.getenv("OUTPUT_FOLDER")
     log_level = os.getenv("LOG_LEVEL") or constants.defult_log_level
     log_format = os.getenv("LOG_FORMAT") or constants.default_log_format
@@ -40,7 +39,6 @@ class Options:
 
 
 options = Options()
-api_prefix = f"https://api.businesscentral.dynamics.com/v2.0/{options.tenant_id}/{options.env_name}/api/v2.0"
 
 # ----------------------------------------------------------------------------
 # Utils
@@ -79,52 +77,33 @@ logger = create_logger("main")
 if options.log_options:
     logger.info(f"logging options...")
     logger.info(constants.section_separator)
-    logger.info(f"client_id: {options.client_id}")
-    logger.info(f"client_secret: {options.client_secret}")
-    logger.info(f"tenant_id: {options.tenant_id}")
-    logger.info(f"scopes: {options.scopes}")
+    logger.info(f"ntlm_domain: {options.ntlm_domain}")
+    logger.info(f"ntlm_user: {options.ntlm_user}")
+    logger.info(f"ntlm_password: {options.ntlm_password}")
+    logger.info(f"nav_url: {options.nav_url}")
     logger.info(f"log_level: {options.log_level}")
     logger.info(f"log_format: {options.log_format}")
     logger.info(constants.section_separator)
     logger.info(f"logging options done.")
 
+# %%
+
 # ----------------------------------------------------------------------------
-# Fetching access token
+# Creating session
 # ----------------------------------------------------------------------------
 
+import requests_ntlm
 
-def fetch_access_token() -> str | Exception:
+logger.info('creating session...')
 
-    url = f"https://login.microsoftonline.com/{options.tenant_id}/oauth2/v2.0/token"
-    payload = {
-        "client_id": options.client_id,
-        "client_secret": options.client_secret,
-        "scope": options.scopes,
-        "grant_type": "client_credentials",
-    }
+session = requests.Session()
 
-    response = requests.post(url, data=payload)
+session.auth = requests_ntlm.HttpNtlmAuth(
+    username=f"{options.ntlm_domain}\\{options.ntlm_user}",
+    password=options.ntlm_password,
+)
 
-    if response.status_code != HTTPStatus.OK:
-        return exception_from_response(response)
-
-    access_token = response.json().get("access_token")
-    return access_token
-
-
-logger.info("fetching access token...")
-
-access_token_result = fetch_access_token()
-
-if access_token_result is Exception:
-    print(f"fetching access token failed, error: {access_token_result}")
-    exit()
-
-access_token = access_token_result
-
-logger.info(f"fetching access token done, access_token: {access_token}")
-
-assert access_token, "failed to get access_token"
+logger.info('creating session done.')
 
 # %%
 
@@ -136,7 +115,7 @@ assert access_token, "failed to get access_token"
 def fetch_companies():
     logger.info("fetching companies...")
 
-    url = f"{api_prefix}/companies"
+    url = f"{options.nav_url}/companies"
     headers = {"Authorization": f"Bearer {access_token}"}
 
     response = requests.get(url, headers=headers)
@@ -153,8 +132,28 @@ def fetch_companies():
     return companies
 
 
-companies = fetch_companies()
-assert companies, "failed to fetch companies"
+from xml.etree import ElementTree
+
+logger.info(f'fetching companies...')
+
+response = session.get(f"{options.nav_url}/Company")
+# response = session.get(f"{options.nav_url}/Company('Creditinfo%20L%C3%A1nstraust')/SGSalesInvoiceHeader?$top=10")
+
+if response.status_code != HTTPStatus.OK:
+    logger.error(f'failed to fetch comapnies, response: {response}')
+    exit()
+
+xml: ElementTree = ElementTree.fromstring(text=response.text)
+with open("out/datasets/companies.xml", mode="w", encoding="utf8") as file:
+    file.write(response.text)
+
+logger.info(f'fetching companies done.')
+
+with open("out/yay.xml", mode='w', encoding='utf8') as file:
+    file.write(response.text)
+
+# companies = fetch_companies()
+# assert companies, "failed to fetch companies"
 
 
 # %%
@@ -207,15 +206,15 @@ def fetch_company_resources(
     return resources_final
 
 
-customers = fetch_company_resources("customers", companies=companies)
-regions = fetch_company_resources(
-    "regions", resource_id="countriesRegions", companies=companies
-)
-items = fetch_company_resources("items", companies=companies)
-sales_invoices = fetch_company_resources(
-    "sales_invoices", resource_id="salesInvoices", companies=companies
-)
-contacts = fetch_company_resources("contacts", companies=companies)
+# customers = fetch_company_resources("customers", companies=companies)
+# regions = fetch_company_resources(
+#     "regions", resource_id="countriesRegions", companies=companies
+# )
+# items = fetch_company_resources("items", companies=companies)
+# sales_invoices = fetch_company_resources(
+#     "sales_invoices", resource_id="salesInvoices", companies=companies
+# )
+# contacts = fetch_company_resources("contacts", companies=companies)
 
 # %%
 
@@ -236,18 +235,18 @@ def write_to_csv(data: list, file_name: str) -> None:
         writer.writerows(data)
 
 
-write_to_csv(companies, "companies")
-write_to_csv(regions, "regions")
-write_to_csv(items, "items")
-write_to_csv(customers, "customers")
-write_to_csv(sales_invoices, "sales_invoices")
-write_to_csv(contacts, "contacts")
+# write_to_csv(companies, "companies")
+# write_to_csv(regions, "regions")
+# write_to_csv(items, "items")
+# write_to_csv(customers, "customers")
+# write_to_csv(sales_invoices, "sales_invoices")
+# write_to_csv(contacts, "contacts")
 
-assert companies, "failed to fetch companies"
-assert regions, "failed to fetch regions"
-assert items, "failed to fetch items"
-assert customers, "failed to fetch customers"
-assert sales_invoices, "failed to fetch sales_invoices"
-assert contacts, "failed to fetch contacts"
+# assert companies, "failed to fetch companies"
+# assert regions, "failed to fetch regions"
+# assert items, "failed to fetch items"
+# assert customers, "failed to fetch customers"
+# assert sales_invoices, "failed to fetch sales_invoices"
+# assert contacts, "failed to fetch contacts"
 
 # %%
