@@ -6,7 +6,9 @@ import sys
 def combine_csv_files(folder_path, output_csv):
     csv_files = [f for f in os.listdir(folder_path) if f[-4::1] == ".csv"]
     dataframes = []
-    print(csv_files)
+
+    for file in csv_files:
+        print(file)
 
     for file in csv_files:
         file_path = os.path.join(folder_path, file)
@@ -20,6 +22,6 @@ def combine_csv_files(folder_path, output_csv):
     print(f"combined csv saved to {output_csv}")
 
 
-folder_path = sys.argv[0]
-output_csv = sys.argv[1]
+folder_path = sys.argv[1]
+output_csv = sys.argv[2]
 combine_csv_files(folder_path, output_csv)
