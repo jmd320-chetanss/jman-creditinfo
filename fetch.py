@@ -1,49 +1,57 @@
-# %% [markdown]
-# # Generating Session
-
-# %%
-
-import requests
-import requests_ntlm
-from bs4 import BeautifulSoup
-from http import HTTPStatus
 import os
 import dotenv
+import requests
+import requests_ntlm
+import pandas as pd
+from http import HTTPStatus
+from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor
+
+dotenv.load_dotenv()
+
+
+def parse_int(value: str) -> int:
+    try:
+        return int(value)
+    except ValueError:
+        return None
+
+
+def write_log(msg: str) -> None:
+    print(f"{msg}\n", end="")
+
 
 domain = os.getenv("NTLM_DOMAIN")
 username = os.getenv("NTLM_USER")
 password = os.getenv("NTLM_PASSWORD")
 base_url = os.getenv("NAV_URL")
+max_single_fetch_count = parse_int(os.getenv("MAX_SINGLE_FETCH_COUNT")) or 5
+start_item_index = parse_int(os.getenv("START_ITEM_INDEX")) or 0
+max_item_count = parse_int(os.getenv("MAX_ITEM_COUNT")) or 1000
+max_thread_count = parse_int(os.getenv("MAX_THREAD_COUNT")) or 2
+max_try_count = parse_int(os.getenv("MAX_TRY_COUNT")) or 3
+output_folder = os.getenv("OUTPUT_FOLDER")
+
+# printing options
+
+write_log(f"domain: {domain}")
+write_log(f"username: {username}")
+write_log(f"password: {password}")
+write_log(f"base_url: {base_url}")
+write_log(f"max_single_fetch_count: {max_single_fetch_count}")
+write_log(f"start_item_index: {start_item_index}")
+write_log(f"max_item_count: {max_item_count}")
+write_log(f"max_thread_count: {max_thread_count}")
+write_log(f"max_try_count: {max_try_count}")
+write_log(f"output_folder: {output_folder}")
 
 session = requests.Session()
 session.auth = requests_ntlm.HttpNtlmAuth(
     username=f"{domain}\\{username}", password=password
 )
 
-# ------------------------------------------------------------------------------------------------
-# Utils
-# ------------------------------------------------------------------------------------------------
 
-
-def list_files_in_folder(folder_path):
-    files = []
-    for file in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, file)
-        if os.path.isfile(file_path):
-            files.append(file_path)
-
-    return files
-
-
-# %% [markdown]
-# # Parsing Sales Invoice Lines
-
-# %%
-from bs4 import BeautifulSoup
-import pandas as pd
-
-
-def parse_sales_invoice_lines(xml: str) -> pd.DataFrame:
+def parse_xml(xml: str) -> pd.DataFrame:
 
     soup = BeautifulSoup(xml, features="xml")
 
@@ -63,54 +71,57 @@ def parse_sales_invoice_lines(xml: str) -> pd.DataFrame:
     return df
 
 
-def write_output(name: str, df: pd.DataFrame) -> None:
-    file_path = f"out/datasets/{name}.csv"
+def write_df(name: str, df: pd.DataFrame) -> None:
+
+    file_path = f"{output_folder}/{name}.csv"
+
+    dir_path = os.path.dirname(file_path)
+    os.makedirs(dir_path, exist_ok=True)
+
     df.to_csv(file_path, index=False)
 
 
-# %% [markdown]
-# # Fetching Sales Invoice Lines
-
-# %%
-
-from concurrent.futures import ThreadPoolExecutor
-
-max_single_fetch_count = 10000
-start_item_index = 20000
-max_item_count = 1988525
-max_thread_count = 2
-
-def handle(count: int, skip: int):
-
-    print(f"fetching {skip}...{skip + count}...\n", end="")
+def fetch_and_write(count: int, skip: int):
 
     url = f"{base_url}?$top={count}&$skip={skip}"
     response = session.get(url=url)
 
     if response.status_code != HTTPStatus.OK:
-        print(f"fetching failed, {skip}...{skip + count}, response: {response}")
-        return
+        raise Exception(f"{response}")
 
     xml_data = response.text
 
-    df = parse_sales_invoice_lines(xml=xml_data)
-    write_output(name=f"sales_invoice_{skip}_{skip + count}", df=df)
+    df = parse_xml(xml=xml_data)
+    write_df(name=f"sales_invoice_line_{skip}_{skip + count}", df=df)
 
-    print(f"fetching {skip}...{skip + count} done.\n", end="")
+
+def task(count: int, skip: int):
+    try_count = 0
+    base_msg = f"fetching {skip}...{skip + count}"
+
+    while True:
+        try:
+            write_log(f"{base_msg}...")
+
+            fetch_and_write(count=count, skip=skip)
+
+            write_log(f"{base_msg} done.")
+            break
+
+        except Exception as ex:
+
+            if try_count < max_try_count:
+                try_count += 1
+                write_log(f"{base_msg}, error: {ex}, trying again...")
+            else:
+                write_log(f"{base_msg}, error: {ex}")
+                break
 
 
 executer = ThreadPoolExecutor(max_workers=max_thread_count)
+
 for i in range(start_item_index, max_item_count, max_single_fetch_count):
     count = min(max_single_fetch_count, max_item_count - i)
-    executer.submit(handle, count, i)
+    executer.submit(task, count, i)
 
 executer.shutdown()
-
-
-# class Options:
-#     output_folder = "./out/datasets"
-
-
-# options = Options()
-
-# file_names = list_files_in_folder(options.output_folder)
