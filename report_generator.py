@@ -1,10 +1,12 @@
 import pandas as pd
 from report import QualityReport
+from concurrent.futures import ThreadPoolExecutor
 
 
 class QualityReportGenerator:
 
     df: pd.DataFrame
+    report_name = ""
     completeness_columns = dict[str, QualityReport.Completeness]()
     uniqueness_columns = dict[str, QualityReport.Uniqueness]()
     validity_columns = dict[str, QualityReport.Validity]()
@@ -18,6 +20,18 @@ class QualityReportGenerator:
     _validation_map = dict[str, any]()
     _column_pairing_map = dict[str, str]()
     _date_columns = list()
+    _completeness_task = None
+    _uniqueness_task = None
+    _validity_task = None
+    _consistency_task = None
+    _timeliness_task = None
+    _executor: ThreadPoolExecutor
+
+    def __init__(self, max_worker_count=None):
+        self._executor = ThreadPoolExecutor(max_workers=max_worker_count)
+
+    def set_report_name(self, name: str):
+        self.report_name = name
 
     def set_dataframe(self, df: pd.DataFrame):
         self.df = df
@@ -242,8 +256,25 @@ class QualityReportGenerator:
     #     except:
     #         return
 
-    def generate_report(self, name: str):
-        name = name or self.df.Name
+    def check_completeness_async(self):
+        self._completeness_task = self._executor.submit(self.check_completeness)
+
+    def check_uniqueness_async(self):
+        self._uniqueness_task = self._executor.submit(self.check_uniqueness)
+
+    def check_validity_async(self):
+        self._validity_task = self._executor.submit(self.check_validity)
+
+    def check_consistency_async(self):
+        self._consistency_task = self._executor.submit(self.check_consistency)
+
+    def check_timeliness_async(self):
+        self._timeliness_task = self._executor.submit(self.check_timeliness)
+
+    def generate_report(self):
+        name = self.report_name or self.df.Name
+
+        self._executor.shutdown()
 
         report = QualityReport()
         report.name = name

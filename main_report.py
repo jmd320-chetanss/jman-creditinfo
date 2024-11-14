@@ -23,6 +23,7 @@ from report_exporter import QualityReportExporter
 
 def generate_sales_invoice_line_report(df: pd.DataFrame):
     report_generator = QualityReportGenerator()
+    report_generator.set_report_name("sales_invoice_line")
     report_generator.set_dataframe(df)
 
     validation_map = {
@@ -151,12 +152,12 @@ def generate_sales_invoice_line_report(df: pd.DataFrame):
         }
     )
 
-    report_generator.check_completeness()
-    report_generator.check_uniqueness()
-    report_generator.check_validity()
-    report_generator.check_timeliness()
-    report_generator.check_consistency()
-    report = report_generator.generate_report("sales_invoice_line")
+    report_generator.check_completeness_async()
+    report_generator.check_uniqueness_async()
+    report_generator.check_validity_async()
+    # report_generator.check_timeliness_async()
+    # report_generator.check_consistency_async()
+    report = report_generator.generate_report()
 
     return report
 
