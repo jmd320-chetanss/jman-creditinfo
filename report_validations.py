@@ -85,6 +85,15 @@ def is_valid_company_number(number) -> bool:
     return re.fullmatch(r"^CT", number) is not None
 
 
+def is_valid_document_no(number):
+    number = str(number)
+    return re.fullmatch(r"^SR", number) is not None
+
+
+def is_valid_type(value):
+    return value.lower() in ["resource", "g/l account"]
+
+
 def is_valid_timeframe(date) -> bool:
     return convert_date(end_date) >= convert_date(date) and convert_date(
         date
