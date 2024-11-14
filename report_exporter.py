@@ -50,14 +50,14 @@ class QualityReportExporter:
             metrics_name="validity",
         )
         add_records(
-            columns=report.timeliness_columns,
-            table_name="sales_invoice_line",
-            metrics_name="timeliness",
-        )
-        add_records(
             columns=report.consistency_columns,
             table_name="sales_invoice_line",
             metrics_name="consistency",
+        )
+        add_records(
+            columns=report.timeliness_columns,
+            table_name="sales_invoice_line",
+            metrics_name="timeliness",
         )
 
         df = pd.DataFrame(records)

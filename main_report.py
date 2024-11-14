@@ -155,8 +155,8 @@ def generate_sales_invoice_line_report(df: pd.DataFrame):
     report_generator.check_completeness_async()
     report_generator.check_uniqueness_async()
     report_generator.check_validity_async()
-    # report_generator.check_timeliness_async()
-    # report_generator.check_consistency_async()
+    report_generator.check_timeliness_async()
+    report_generator.check_consistency_async()
     report = report_generator.generate_report()
 
     return report

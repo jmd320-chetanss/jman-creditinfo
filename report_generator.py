@@ -210,51 +210,71 @@ class QualityReportGenerator:
         self.validity = consolidated_metrics
         self.validity_columns = column_metrics
 
-    # def check_timeliness(self):
+    def check_timeliness(self):
+        pass
 
-    #     column_metrics = dict[str, QualityReport.Timeliness]()
+    def check_consistency(self):
 
-    #     for column_name in self._date_columns:
-    #         column_df = self.df[column_name].dropna()
-    #         total_count = int(len(column_df))
+        column_pairing_map = self._column_pairing_map
 
-    #         validtor = self._validation_map.get(column_name)
-    #         if validtor is None:
-    #             validtor = null_validator
+        column_metrics = dict[str, QualityReport.Consistency]()
 
-    #         valid_dates = column_df.apply(validtor)
-    #         valid_count = int(valid_dates.count())
+        for column_name in self.df.columns:
 
-    #         metrics = QualityReport.Timeliness()
-    #         metrics.total_count = total_count
-    #         metrics.valid_count = valid_count
-    #         metrics.invalid_count = total_count - valid_count
-    #         metrics.score = valid_count /
+            column_df = self.df[column_name].dropna()
+            total_count = int(len(column_df))
+            inconsistency_count = 0
 
-    # def check_consistency(self):
-    #     consistency = {}
-    #     for col in self.df.columns:
-    #         if col in self._column_pairing_map:
-    #             temp_consistency = {}
-    #             inconsistency_count = 0
-    #             pair = self._column_pairing_map[col]
-    #             for _, row in self.df.iterrows():
-    #                 if row[col] not in temp_consistency:
-    #                     temp_consistency[row[col]] = row[pair]
-    #                 elif (
-    #                     row[col] in temp_consistency
-    #                     and row[pair] != temp_consistency[row[col]]
-    #                 ):
-    #                     inconsistency_count += 1
-    #             consistency[(col, pair)] = inconsistency_count / len(self.df)
+            if column_name not in column_pairing_map:
+                inconsistency_count = 0
+            else:
+                temp_consistency = {}
+                pair = column_pairing_map[column_name]
+                for _, row in self.df.iterrows():
+                    if row[column_name] not in temp_consistency:
+                        temp_consistency[row[column_name]] = row[pair]
+                    elif (
+                        row[column_name] in temp_consistency
+                        and row[pair] != temp_consistency[row[column_name]]
+                    ):
+                        inconsistency_count += 1
 
-    #     self.inconsistency = consistency
-    #     try:
-    #         self.avg_consistency = sum(self.inconsistency.values()) / len(
-    #             self.inconsistency
-    #         )
-    #     except:
-    #         return
+            metric = QualityReport.Consistency()
+            metric.total_count = total_count
+            metric.consistent_count = total_count - inconsistency_count
+            metric.inconsistent_count = inconsistency_count
+            metric.score = (
+                (metric.consistent_count / total_count) * 100 if total_count else 100
+            )
+
+            column_metrics[column_name] = metric
+
+        # calculating consolidated metrics
+        column_metrics_values = column_metrics.values()
+
+        consolidated_metrics = QualityReport.Consistency()
+        consolidated_metrics.total_count = sum(
+            [metrics.total_count for metrics in column_metrics_values]
+        )
+        consolidated_metrics.consistent_count = sum(
+            [metrics.consistent_count for metrics in column_metrics_values]
+        )
+        consolidated_metrics.inconsistent_count = sum(
+            [metrics.inconsistent_count for metrics in column_metrics_values]
+        )
+
+        consolidated_metrics.score = (
+            round(
+                sum([metrics.score for metrics in column_metrics_values])
+                / len(column_metrics_values),
+                2,
+            )
+            if len(column_metrics_values)
+            else 0
+        )
+
+        self.consistency = consolidated_metrics
+        self.consistency_columns = column_metrics
 
     def check_completeness_async(self):
         self._completeness_task = self._executor.submit(self.check_completeness)
