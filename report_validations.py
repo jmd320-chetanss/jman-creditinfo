@@ -108,3 +108,12 @@ def is_valid_timestamp(date) -> bool:
     date = str(date)
     pattern = r"^\d{4}-\d{2}-\d{2}T.*"
     return re.fullmatch(pattern, date) is not None
+
+
+def is_valid_blanket_order_no(value):
+    number = str(value)
+    return re.fullmatch(r"^S", number) is not None
+
+
+def is_valid_VAT_identifier(value):
+    return value in ["VSK24", "ENGINN VSK", "VSK11", "ENGINN"]

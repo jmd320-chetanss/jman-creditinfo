@@ -6,6 +6,8 @@ from report_validations import (
     is_valid_timestamp,
     is_valid_document_no,
     is_valid_type,
+    is_valid_blanket_order_no,
+    is_valid_VAT_identifier,
 )
 
 from report_generator import QualityReportGenerator
@@ -45,6 +47,8 @@ def generate_sales_invoice_line_report(df: pd.DataFrame):
         "Dimension_Set_ID": is_valid_number,
         "Qty_per_Unit_of_Measure": is_valid_number,
         "Quantity_Base": is_valid_number,
+        "Blanket_Order_No": is_valid_blanket_order_no,
+        "VAT_Identifier": is_valid_VAT_identifier,
     }
 
     report_generator.set_validation_map(map=validation_map)

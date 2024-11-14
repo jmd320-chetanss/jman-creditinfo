@@ -160,12 +160,16 @@ class QualityReportGenerator:
 
         column_metrics = dict[str, QualityReport.Validity]()
         for column_name in df:
-            column_df = df[column_name].dropna()
+            column_df = df[column_name]
             total_count = int(len(column_df.index))
 
             validator = self._validation_map.get(column_name)
             if validator is None:
-                valid_count = total_count
+                metric = self.completeness_columns.get(column_name)
+                if metric is None:
+                    valid_count = total_count
+                else:
+                    valid_count = metric.value_count
             else:
                 valid_count = int(column_df.apply(validator).count())
 
