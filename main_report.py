@@ -141,14 +141,8 @@ def generate_sales_invoice_line_report(df: pd.DataFrame):
 
     report_generator.set_column_pairing_map(
         {
-            "currencyId": "currencyCode",
-            "companyNumber": "type",
-            "companyNumber": "companyName",
-            ("itemCategoryId", "itemCategoryCode"): "unitPrice",
-            "code": "displayName",
-            "customerId": "customerNumber",
-            "customerId": "customerName",
-            "billToCustomerId": "billToName",
+            "Type": "VAT_Difference",
+            "VAT_Identifier": "VAT_Prod_Posting_Group",
         }
     )
 

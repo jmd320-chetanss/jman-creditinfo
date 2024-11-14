@@ -175,7 +175,7 @@ class QualityReportGenerator:
             consolidated_metrics.invalid_count = total_count - valid_count
 
             score = (
-                (consolidated_metrics.invalid_count / total_count) * 100
+                (consolidated_metrics.valid_count / total_count) * 100
                 if total_count
                 else 100
             )
@@ -243,8 +243,8 @@ class QualityReportGenerator:
             metric.total_count = total_count
             metric.consistent_count = total_count - inconsistency_count
             metric.inconsistent_count = inconsistency_count
-            metric.score = (
-                (metric.consistent_count / total_count) * 100 if total_count else 100
+            metric.score = round(
+                (metric.consistent_count / total_count) * 100 if total_count else 100, 2
             )
 
             column_metrics[column_name] = metric
