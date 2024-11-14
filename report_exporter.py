@@ -17,48 +17,18 @@ class QualityReportExporter:
 
         records = []
 
-        def add_records(columns: list, table_name: str, metrics_name: str):
+        column_names = report.completeness_columns.keys()
+        for column_name in column_names:
+            record = {
+                "column_name": column_name,
+                "completeness": report.completeness_columns[column_name].score,
+                "uniqueness": report.uniqueness_columns[column_name].score,
+                "validity": report.validity_columns[column_name].score,
+                "consistency": report.consistency_columns[column_name].score,
+                # "timeliness": report.timeliness_columns[column_name].score,
+            }
 
-            for column_name in columns:
-                metric = columns[column_name]
-
-                record = {
-                    "source_name": "dynamics-nav",
-                    "table_name": table_name,
-                    "column_name": column_name,
-                    "metrics_name": metrics_name,
-                    "score": metric.score,
-                    "good_count": 0,
-                    "bad_count": 0,
-                }
-
-                records.append(record)
-
-        add_records(
-            columns=report.completeness_columns,
-            table_name="sales_invoice_line",
-            metrics_name="completeness",
-        )
-        add_records(
-            columns=report.uniqueness_columns,
-            table_name="sales_invoice_line",
-            metrics_name="uniqueness",
-        )
-        add_records(
-            columns=report.validity_columns,
-            table_name="sales_invoice_line",
-            metrics_name="validity",
-        )
-        add_records(
-            columns=report.consistency_columns,
-            table_name="sales_invoice_line",
-            metrics_name="consistency",
-        )
-        add_records(
-            columns=report.timeliness_columns,
-            table_name="sales_invoice_line",
-            metrics_name="timeliness",
-        )
+            records.append(record)
 
         df = pd.DataFrame(records)
         csv_data = df.to_csv(index=False, lineterminator="\n")
