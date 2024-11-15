@@ -7,7 +7,7 @@ start_date = "2009-01-01"
 end_date = "3000-12-31"
 
 
-def null_validator(value) -> bool:
+def null_validation(value) -> bool:
     return True
 
 
@@ -18,7 +18,7 @@ def is_valid_email(email) -> bool:
     return re.fullmatch(pattern, email) is not None
 
 
-def is_valid_base_measure_code(code) -> bool:
+def is_valid_measure_code(code) -> bool:
     code = str(code)
     return code.lower() in ("STK", "DAGUR", "KASSI", "KLST", "STYKKI", "KLST.")
 
@@ -40,9 +40,9 @@ def is_valid_address_format(address) -> bool:
     return re.fullmatch(pattern, address) is not None
 
 
-def is_valid_number(number) -> bool:
+def is_valid_number(value) -> bool:
     try:
-        float(number)
+        float(value)
         return True
     except ValueError:
         return False
@@ -80,14 +80,14 @@ def is_valid_status(status) -> bool:
     return status.lower() in ("draft", "open", "paid")
 
 
-def is_valid_company_number(number) -> bool:
-    number = str(number)
-    return re.fullmatch(r"^CT", number) is not None
+def is_valid_company_number(value) -> bool:
+    value = str(value)
+    return re.fullmatch(r"^CT", value) is not None
 
 
-def is_valid_document_no(number):
-    number = str(number)
-    return re.fullmatch(r"^SR", number) is not None
+def is_valid_document_no(value):
+    value = str(value)
+    return re.fullmatch(r"^SR", value) is not None
 
 
 def is_valid_type(value):
@@ -111,9 +111,9 @@ def is_valid_timestamp(date) -> bool:
 
 
 def is_valid_blanket_order_no(value):
-    number = str(value)
-    return re.fullmatch(r"^S", number) is not None
+    value = str(value)
+    return re.fullmatch(r"^S", value) is not None
 
 
-def is_valid_VAT_identifier(value):
+def is_valid_vat_identifier(value):
     return value in ["VSK24", "ENGINN VSK", "VSK11", "ENGINN"]
