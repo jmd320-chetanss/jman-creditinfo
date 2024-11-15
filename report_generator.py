@@ -109,7 +109,7 @@ class QualityReportGenerator:
 
         column_metrics = dict[str, QualityReport.Uniqueness]()
         for column_name in df:
-            column_df = df[column_name].dropna()
+            column_df = df[column_name]
             total_count = len(column_df.index)
             duplicate_count = int(column_df.duplicated().sum())
             unique_count = total_count - duplicate_count
@@ -120,7 +120,7 @@ class QualityReportGenerator:
             consolidated_metrics.duplicate_count = total_count - unique_count
 
             score = (
-                (consolidated_metrics.duplicate_count / total_count) * 100
+                (consolidated_metrics.unique_count / total_count) * 100
                 if total_count
                 else 100
             )
