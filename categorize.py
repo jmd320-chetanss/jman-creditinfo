@@ -33,9 +33,8 @@ if dropped_count > 0:
 df["customer_id"] = (
     pd.to_numeric(df["customer_id"], errors="coerce").dropna().astype(int)
 )
-# df["customer_id"] = df["customer_id"].astype(int)
 df["invoice_date"] = pd.to_datetime(df["invoice_date"], errors="coerce")
-df["amount"] = df["amount"].astype(int)
+df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
 
 previous_count = len(df)
 df = df.dropna()
@@ -52,26 +51,62 @@ if dropped_count > 0:
 
 
 def get_category(df: pd.DataFrame) -> str:
+    """
+        If
+    """
     if len(df) < 2:
-        return "single"
+        return "non-reoccurring"
 
     intervals = df["invoice_date"].sort_values().diff().dt.days[1:]
 
     if intervals.max() - intervals.min() <= 5:
         return "recurring"
     else:
-        return "reoccurring"
+        return "re-occurring"
 
 
-groups = df.groupby("customer_id").groups
+def get_month_name(month: int) -> str | None:
+    return {
+        1: "jan",
+        2: "feb",
+        3: "mar",
+        4: "apr",
+        5: "may",
+        6: "jun",
+        7: "jul",
+        8: "aug",
+        9: "sep",
+        10: "oct",
+        11: "nov",
+        12: "dec",
+    }.get(month)
+
+
+df["year"] = df["invoice_date"].dt.to_period("Y")
+groups = df.groupby(["customer_id", "year"]).groups
 
 output = list()
-for customer_id, index in groups.items():
-    category = get_category(df.loc[index])
-    output.append({"customer_id": customer_id, "category": category})
+for key, index in groups.items():
+    customer_id, year_month_period = key
+    records = df.loc[index]
+    record_count = len(records)
+    year = year_month_period.year
+    total_amount = int(records["amount"].sum())
+    category = get_category(records)
+
+    output.append(
+        {
+            "customer_id": customer_id,
+            "year": year,
+            "invoice_count": record_count,
+            "total_amount": total_amount,
+            "category": category,
+        }
+    )
 
 # %%
 
 output_df = pd.DataFrame(output)
-output_df = output_df.set_index("customer_id")
-output_df.to_csv(output_filepath)
+output_df.to_csv(output_filepath, index=False)
+
+# %%
