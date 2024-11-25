@@ -5,6 +5,15 @@ import pandas as pd
 sales_invoice_filepath = "out/datasets/sales_invoice_line.csv"
 output_filepath = "out/reports/revenue.csv"
 
+# max number of difference in days to still consider recurring
+recurring_days_thresold = 5
+
+# max number of difference in days to still consider reoccurring
+reoccurring_days_thresold = 0
+
+# max number of consecutive years to consider reoccurring
+reoccurring_max_period_count = 3  # 3 years in our case
+
 # ----------------------------------------------------------------------------
 # reading
 # ----------------------------------------------------------------------------
@@ -50,21 +59,6 @@ if dropped_count > 0:
 # %%
 
 
-def get_category(df: pd.DataFrame) -> str:
-    """
-        If
-    """
-    if len(df) < 2:
-        return "non-reoccurring"
-
-    intervals = df["invoice_date"].sort_values().diff().dt.days[1:]
-
-    if intervals.max() - intervals.min() <= 5:
-        return "recurring"
-    else:
-        return "re-occurring"
-
-
 def get_month_name(month: int) -> str | None:
     return {
         1: "jan",
@@ -82,31 +76,78 @@ def get_month_name(month: int) -> str | None:
     }.get(month)
 
 
-df["year"] = df["invoice_date"].dt.to_period("Y")
-groups = df.groupby(["customer_id", "year"]).groups
+def get_next_smallest(values: list, value: any, count: int) -> list:
+    """
+    returns a list or next elements with max size of count.
+    """
+    sorted_values = sorted(values)
+    next_values = [y for y in sorted_values if y > value][:count]
+    return next_values
 
-output = list()
-for key, index in groups.items():
-    customer_id, year_month_period = key
-    records = df.loc[index]
-    record_count = len(records)
-    year = year_month_period.year
-    total_amount = int(records["amount"].sum())
-    category = get_category(records)
 
-    output.append(
-        {
-            "customer_id": customer_id,
-            "year": year,
-            "invoice_count": record_count,
-            "total_amount": total_amount,
-            "category": category,
-        }
-    )
+def get_category(records: pd.DataFrame, year_groups) -> str:
+    intervals = records["invoice_date"].sort_values().diff().dt.days[1:]
+
+    if intervals.max() - intervals.min() <= recurring_days_thresold:
+        return "recurring"
+
+    year = records.iloc[0]["year"]
+    years = year_groups.keys()
+    next_years = get_next_smallest(years, year, reoccurring_max_period_count)
+    next_year_count = len(next_years)
+
+    if next_year_count > 0:
+        next_years_invoice_counts = [len(year_groups[year]) for year in next_years]
+        next_years_min_invoice_count = min(next_years_invoice_counts)
+        next_years_max_invoice_count = max(next_years_invoice_counts)
+        next_years_max_invoice_count_diff = (
+            next_years_max_invoice_count - next_years_min_invoice_count
+        )
+
+        if next_years_max_invoice_count_diff <= reoccurring_days_thresold:
+            return "reoccuring"
+
+    return "non-reoccurring"
+
+
+def get_categorizations(records: pd.DataFrame) -> pd.DataFrame:
+
+    categorizations = list()
+
+    year_groups = records.groupby("year").groups
+    for year, index in year_groups.items():
+        year_records = df.loc[index]
+        year_record_count = len(year_records)
+        year_total_amount = int(year_records["amount"].sum())
+        category = get_category(year_records, year_groups=year_groups)
+
+        categorizations.append(
+            {
+                "customer_id": customer_id,
+                "year": year,
+                "invoice_count": year_record_count,
+                "total_amount": year_total_amount,
+                "category": category,
+            }
+        )
+
+    categorizations_df = pd.DataFrame(categorizations)
+    return categorizations_df
+
+
+df["year"] = df["invoice_date"].dt.year
+customer_groups = df.groupby("customer_id").groups
+
+categorizations = list[pd.DataFrame]()
+for customer_id, index in customer_groups.items():
+    customer_records = df.loc[index]
+
+    customer_categorizations = get_categorizations(customer_records)
+    categorizations.append(customer_categorizations)
+
+categorizations_df = pd.concat(categorizations)
 
 # %%
 
-output_df = pd.DataFrame(output)
-output_df.to_csv(output_filepath, index=False)
-
+categorizations_df.to_csv(output_filepath, index=False)
 # %%
